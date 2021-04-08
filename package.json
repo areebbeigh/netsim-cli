@@ -1,0 +1,27 @@
+{
+  "name": "netsim-cli",
+  "version": "1.0.0",
+  "description": "A cli network simulator",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && node dist/app.js",
+    "start-dev": "nodemon --exec 'npm run lint && npm run start' -w src/ -e ts,tsx,js,jsx",
+    "lint": "./node_modules/.bin/eslint src/ --fix"
+  },
+  "author": "Areeb Beigh",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "eslint": "^7.23.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {}
+}
