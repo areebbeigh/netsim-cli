@@ -43,7 +43,7 @@ module.exports = {
     'no-use-before-define': 0,
     '@typescript-eslint/no-empty-interface': 0,
     'lines-between-class-members': 0,
-    'no-named-as-default': 0,
+    'import/no-named-as-default': 0,
     'no-param-reassign': 0,
     'no-plusplus': 0,
   },

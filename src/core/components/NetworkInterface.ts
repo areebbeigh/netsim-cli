@@ -1,4 +1,5 @@
 import Connection from './Connection';
+import type { Frame } from '../data/Frame';
 import getRandomMac from '../lib/randomMac';
 
 class NetworkInterface implements INetworkInterface {
@@ -33,6 +34,10 @@ class NetworkInterface implements INetworkInterface {
     // Connect the other interface to this if it doesn't have a connection already
     if (!otherInterface.connection) otherInterface.connect(this);
     return connection;
+  }
+
+  receive(frame: Frame): void {
+    console.log('received:', frame, this.host);
   }
 }
 
