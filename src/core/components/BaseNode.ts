@@ -57,6 +57,29 @@ abstract class BaseNode implements IBaseNode {
 
     iface1.connect(iface2);
   }
+
+  /**
+   * Disconnect this node from `node`
+   * @param node
+   */
+  disconnect(node: BaseNode) {
+    this.getConnectedNodeInterfaces(node).forEach((iface) =>
+      iface.disconnect()
+    );
+  }
+
+  /**
+   * Returns the interfaces connected to given node
+   * @param node
+   * @returns
+   */
+  private getConnectedNodeInterfaces(node: BaseNode) {
+    const interfaces = this.interfaces.filter(
+      (iface) => iface.getConnectedNode() === node
+    );
+
+    return interfaces;
+  }
 }
 
 export default BaseNode;

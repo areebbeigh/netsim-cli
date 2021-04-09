@@ -44,6 +44,14 @@ class NetworkInterface implements INetworkInterface {
     console.log('received:', frame, this.host);
   }
 
+  disconnect() {
+    this.connection?.disconnect();
+  }
+
+  getConnectedNode() {
+    return this.connection?.getConnectedInterface(this).host;
+  }
+
   get isConnected() {
     return !!this.connection;
   }
