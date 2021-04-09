@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/app.js",
-    "start-dev": "nodemon --exec 'npm run lint && npm run start' -w src/ -e ts,tsx,js,jsx",
-    "lint": "./node_modules/.bin/eslint src/ --fix"
+    "start-dev": "nodemon --exec 'npm run start' -w src/ -e ts,tsx,js,jsx",
+    "lint": "./node_modules/.bin/eslint src/"
   },
   "author": "Areeb Beigh",
   "license": "ISC",

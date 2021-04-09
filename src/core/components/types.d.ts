@@ -1,20 +1,26 @@
+type NetworkInterface = import('./NetworkInterface').NetworkInterface;
+type Connection = import('./Connection').Connection;
+type BaseNode = import('./BaseNode').BaseNode;
+
 interface IConnection {
   port1: INetworkInterface;
   port2: INetworkInterface;
 }
 
 interface INetworkInterface {
-  host: NetworkNode;
+  host: BaseNode;
   mac: string;
-  connection: import('./Connection').Connection;
+  name: string;
+  connection: Connection;
   skipReceiveDestinationCheck: boolean;
-  connect(
-    interface: import('./NetworkInterface').NetworkInterface
-  ): import('./Connection').Connection;
+  connect(interface: NetworkInterface): Connection;
 }
 
-type NetworkNode = Host | Hub | Switch;
+type NetworkNode = IHost | IHub | ISwitch;
 
-interface Host {}
-interface Hub {}
-interface Switch {}
+interface IBaseNode {
+  interfaces: NetworkInterface[];
+}
+interface IHost extends IBaseNode {}
+interface IHub extends IBaseNode {}
+interface ISwitch extends IBaseNode {}

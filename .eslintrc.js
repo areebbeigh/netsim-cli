@@ -46,5 +46,8 @@ module.exports = {
     'import/no-named-as-default': 0,
     'no-param-reassign': 0,
     'no-plusplus': 0,
+    '@typescript-eslint/explicit-module-boundary-types': 0,
+    'no-explicit-any': 0,
+    'import/prefer-default-export': 0,
   },
 };
