@@ -137,8 +137,38 @@ class NetworkInterface implements INetworkInterface {
     this.connection?.put(frame, this);
   }
 
+  /**
+   * Send an ACK for a frame
+   * @param ip
+   * @param frame
+   */
+  sendAck(ip: string, forFrame: Frame) {
+    if (this.ip) {
+      const packet = new Packet(
+        this.ip,
+        forFrame.packet.source,
+        'ACK'
+      );
+      this.sendPacket(packet);
+    } else this.throwNoIp();
+  }
+
   receive(frame: Frame): void {
-    console.log('received:', frame, this.host);
+    if (!this.skipReceiveDestinationCheck) {
+      if (frame.destination === this.mac) {
+        // TODO: Forward frame to host
+        this.sendAck(frame.packet.source, frame);
+      }
+      // ARP request
+      if (
+        frame.destination == null &&
+        frame.packet.destination === this.ip
+      ) {
+        this.sendAck(frame.packet.source, frame);
+      }
+    } else {
+      // TODO: Forward the frame directly to the host
+    }
   }
 }
 
