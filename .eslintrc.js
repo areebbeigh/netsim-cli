@@ -49,5 +49,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 0,
     'no-explicit-any': 0,
     'import/prefer-default-export': 0,
+    'max-classes-per-file': 0,
   },
 };

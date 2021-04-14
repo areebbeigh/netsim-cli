@@ -8,9 +8,11 @@ interface IConnection {
 }
 
 interface INetworkInterface {
+  name: string;
   host: BaseNode;
   mac: string;
-  name: string;
+  ip: string | undefined;
+  subnet: string;
   connection: Connection;
   skipReceiveDestinationCheck: boolean;
   connect(interface: NetworkInterface): Connection;
@@ -20,6 +22,7 @@ type NetworkNode = IHost | IHub | ISwitch;
 
 interface IBaseNode {
   interfaces: NetworkInterface[];
+  arpTable: { [key: string]: string };
 }
 interface IHost extends IBaseNode {}
 interface IHub extends IBaseNode {}

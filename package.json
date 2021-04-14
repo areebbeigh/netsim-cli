@@ -12,6 +12,7 @@
   "author": "Areeb Beigh",
   "license": "ISC",
   "devDependencies": {
+    "@types/netmask": "^1.0.30",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.21.0",
     "eslint": "^7.23.0",
@@ -23,5 +24,7 @@
     "prettier": "^2.1.2",
     "typescript": "^4.2.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "netmask": "^2.0.2"
+  }
 }

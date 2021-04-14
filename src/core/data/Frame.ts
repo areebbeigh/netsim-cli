@@ -5,10 +5,18 @@ class Frame implements IFrame {
   destination;
   packet;
 
-  constructor(source: string, destination: string, packet: Packet) {
+  constructor(
+    source: string,
+    destination: string | null,
+    packet: Packet
+  ) {
     this.source = source;
     this.destination = destination;
     this.packet = packet;
+  }
+
+  get isBroadcast() {
+    return this.destination == null;
   }
 }
 

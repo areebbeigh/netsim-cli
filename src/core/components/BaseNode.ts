@@ -3,11 +3,13 @@ import NetworkInterface from './NetworkInterface';
 
 abstract class BaseNode implements IBaseNode {
   name: string | undefined;
-  interfaces: NetworkInterface[];
+  interfaces: IBaseNode['interfaces'];
+  arpTable: IBaseNode['arpTable'];
 
   constructor(name?: string) {
     this.name = name;
     this.interfaces = [];
+    this.arpTable = {};
   }
 
   /**
@@ -79,6 +81,14 @@ abstract class BaseNode implements IBaseNode {
     );
 
     return interfaces;
+  }
+
+  /**
+   * Lookup this host's ARP table
+   * @param ip
+   */
+  lookupArpTable(ip: string): string | null {
+    return this.arpTable[ip] || null;
   }
 }
 

@@ -6,6 +6,6 @@ interface IPacket {
 
 interface IFrame {
   source: string;
-  destination: string;
+  destination: string | null;
   packet: import('./Packet').Packet;
 }
