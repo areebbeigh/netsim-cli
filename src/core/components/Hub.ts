@@ -1,8 +1,8 @@
 import BaseNode from './BaseNode';
 
 class Hub extends BaseNode implements IHub {
-  constructor(interfaceCount: number, name?: string) {
-    super(name);
+  constructor(name?: string, interfaceCount = 5) {
+    super(name, interfaceCount);
     this.createInterfaces(interfaceCount, true);
   }
 }

@@ -50,5 +50,8 @@ module.exports = {
     'no-explicit-any': 0,
     'import/prefer-default-export': 0,
     'max-classes-per-file': 0,
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
+    'class-methods-use-this': 0,
   },
 };

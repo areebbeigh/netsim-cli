@@ -5,7 +5,11 @@ import type { BaseNode } from './BaseNode';
 import getRandomMac from '../lib/randomMac';
 import Packet from '../data/Packet';
 import Frame from '../data/Frame';
-import { InvalidIp, NoAssignedIp } from '../errors';
+import {
+  InvalidIp,
+  NoAssignedIp,
+  AlreadyConnected,
+} from '../errors';
 
 class NetworkInterface implements INetworkInterface {
   host;
@@ -46,7 +50,7 @@ class NetworkInterface implements INetworkInterface {
 
   connect(otherInterface: NetworkInterface): Connection {
     if (otherInterface.connection && this.connection) {
-      throw Error(
+      throw new AlreadyConnected(
         `Can't connect interfaces. Other connections already exist.`
       );
     }

@@ -1,4 +1,4 @@
-import { NoFreeInterfaceError } from '../errors';
+import { InterfaceNotFound, NoFreeInterfaceError } from '../errors';
 import NetworkInterface from './NetworkInterface';
 
 abstract class BaseNode implements IBaseNode {
@@ -6,10 +6,11 @@ abstract class BaseNode implements IBaseNode {
   interfaces: IBaseNode['interfaces'];
   arpTable: IBaseNode['arpTable'];
 
-  constructor(name?: string) {
+  constructor(name?: string, interfaceCount = 1) {
     this.name = name;
     this.interfaces = [];
     this.arpTable = {};
+    this.createInterfaces(interfaceCount, false);
   }
 
   /**
@@ -30,6 +31,15 @@ abstract class BaseNode implements IBaseNode {
         )
       );
     }
+  }
+
+  getInterfaceByName(name: string) {
+    const iface = this.interfaces.find((i) => i.name === name);
+    if (!iface)
+      throw new InterfaceNotFound(
+        `${name} not found on node ${this.name}`
+      );
+    return iface;
   }
 
   /**

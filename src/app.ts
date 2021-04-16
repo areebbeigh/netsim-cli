@@ -1,7 +1,7 @@
 import Host from './core/components/Host';
 import Hub from './core/components/Hub';
 
-const hub1 = new Hub(2, 'hub1');
+const hub1 = new Hub('hub1', 2);
 const h1 = new Host('host1');
 
 h1.connect(hub1);

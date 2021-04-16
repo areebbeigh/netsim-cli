@@ -1,22 +1,32 @@
 class NoFreeInterfaceError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'NoFreeInterfaceError';
-  }
+  name = 'NoFreeInterfaceError';
+}
+
+class AlreadyConnected extends Error {
+  name = 'AlreadyConnected';
+}
+
+class InterfaceNotFound extends Error {
+  name = 'InterfaceNotFound';
 }
 
 class NoAssignedIp extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'NoAssignedIp';
-  }
+  name = 'NoAssignedIp';
 }
 
 class InvalidIp extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'InvalidIp';
-  }
+  name = 'InvalidIp';
 }
 
-export { NoFreeInterfaceError, NoAssignedIp, InvalidIp };
+class EngineError extends Error {
+  name = 'EngineError';
+}
+
+export {
+  NoFreeInterfaceError,
+  NoAssignedIp,
+  InvalidIp,
+  EngineError,
+  AlreadyConnected,
+  InterfaceNotFound,
+};
