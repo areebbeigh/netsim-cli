@@ -1,9 +1,13 @@
 type DeviceType_ = import('./engine').DeviceType;
 
 interface IEngine {
-  addDevice(name: string, type: DeviceType_, ports: number): BaseNode;
+  addDevice(
+    name: string,
+    type: DeviceType_,
+    ports: number
+  ): [BaseNode, number];
   removeDeviceById(id: number): void;
-  listDevices(): BaseNode[];
+  listDevices(): { id: number; device: BaseNode }[];
 
   // connect(device1: BaseNode, device2: BaseNode);
   connectById(

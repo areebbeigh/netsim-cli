@@ -1,14 +1,11 @@
-import Host from './core/components/Host';
-import Hub from './core/components/Hub';
+import Engine, { DeviceType } from './core/engine';
 
-const hub1 = new Hub('hub1', 2);
-const h1 = new Host('host1');
+const engine = new Engine();
 
-h1.connect(hub1);
-console.log('here:', hub1, '\n', h1);
-console.log(h1.interfaces[0].connection);
-// hub1.connect(h1);
-hub1.disconnect(h1);
-console.log('-------disconnected');
-console.log('here:', hub1, '\n', h1);
-console.log(h1.interfaces[0].connection);
+const [hub, hubId] = engine.addDevice('Hub1', DeviceType.HUB, 5);
+const [h1, h1Id] = engine.addDevice('Host1', DeviceType.HOST, 1);
+const [h2, h2Id] = engine.addDevice('Host2', DeviceType.HOST, 1);
+const [h3, h3Id] = engine.addDevice('Host3', DeviceType.HOST, 1);
+
+console.log('devices:', engine.listDevices());
+engine.connectById(hubId, 'eth0', h1Id, 'eth0');

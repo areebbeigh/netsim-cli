@@ -8,6 +8,8 @@ class Host extends BaseNode implements IHost {
     super(name, interfaceCount);
     if (interfaceCount > 1)
       throw new Error(`Interface count > 1 not supported for Host.`);
+
+    this.createInterfaces(interfaceCount, false);
   }
 
   private get iface() {

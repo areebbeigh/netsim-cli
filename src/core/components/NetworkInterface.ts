@@ -5,11 +5,7 @@ import type { BaseNode } from './BaseNode';
 import getRandomMac from '../lib/randomMac';
 import Packet from '../data/Packet';
 import Frame from '../data/Frame';
-import {
-  InvalidIp,
-  NoAssignedIp,
-  AlreadyConnected,
-} from '../errors';
+import { InvalidIp, NoAssignedIp, AlreadyConnected } from '../errors';
 
 class NetworkInterface implements INetworkInterface {
   host;
@@ -158,6 +154,7 @@ class NetworkInterface implements INetworkInterface {
   }
 
   receive(frame: Frame): void {
+    this.host.addToArpTable(frame.packet.source, frame.source);
     if (!this.skipReceiveDestinationCheck) {
       if (frame.destination === this.mac) {
         // TODO: Forward frame to host

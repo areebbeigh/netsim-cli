@@ -10,7 +10,6 @@ abstract class BaseNode implements IBaseNode {
     this.name = name;
     this.interfaces = [];
     this.arpTable = {};
-    this.createInterfaces(interfaceCount, false);
   }
 
   /**
@@ -99,6 +98,16 @@ abstract class BaseNode implements IBaseNode {
    */
   lookupArpTable(ip: string): string | null {
     return this.arpTable[ip] || null;
+  }
+
+  /**
+   * Add an entry to the arp table if it doesn't already exist.
+   * @param ip
+   * @param mac
+   */
+  addToArpTable(ip: string, mac: string) {
+    // TODO: Invalidate/remove arp table entries.
+    this.arpTable[ip] = mac;
   }
 }
 

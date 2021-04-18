@@ -27,16 +27,21 @@ class Engine implements IEngine {
     }
   }
 
-  addDevice(name: string, type: DeviceType, ports: number) {
-    if (type === DeviceType.HUB && ports > 1)
+  addDevice(
+    name: string,
+    type: DeviceType,
+    ports: number
+  ): [BaseNode, number] {
+    if (type === DeviceType.HOST && ports > 1)
       throw new EngineError(`A Host can have only one port.`);
 
     const Node = this.getNodeClass(type);
     const node = new Node(name, ports);
-    this.nodes[this.idCounter] = node;
+    const nodeId = this.idCounter;
+    this.nodes[nodeId] = node;
     this.idCounter++;
 
-    return node;
+    return [node, nodeId];
   }
 
   removeDeviceById(id: number) {
@@ -50,7 +55,10 @@ class Engine implements IEngine {
   }
 
   listDevices() {
-    return Object.values(this.nodes);
+    return Object.keys(this.nodes).map((nodeId: string) => ({
+      id: parseInt(nodeId, 10),
+      device: this.nodes[parseInt(nodeId, 10)],
+    }));
   }
 
   connectById(
@@ -79,3 +87,4 @@ class Engine implements IEngine {
 }
 
 export default Engine;
+export { DeviceType };
