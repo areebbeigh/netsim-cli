@@ -33,6 +33,20 @@ class NetworkInterface implements INetworkInterface {
     this.subnet = '255.255.255.0';
   }
 
+  get isConnected() {
+    return !!this.connection;
+  }
+
+  get fullName() {
+    return `${this.host.name}.${this.name}`;
+  }
+
+  private throwNoIp() {
+    throw new NoAssignedIp(
+      `${this.host.name}.${this.name} interface has no IP assigned. Can't send packets.`
+    );
+  }
+
   assignIp(ip: string) {
     const netmask = new Netmask(ip, this.subnet);
     // TODO: Add check to see if this interface is a default gateway.
@@ -46,21 +60,26 @@ class NetworkInterface implements INetworkInterface {
     this.host.logger.logEvent(EventType.IP_ASSIGN, this.host, this);
   }
 
-  connect(otherInterface: NetworkInterface): Connection {
-    if (otherInterface.connection && this.connection) {
+  connect(
+    otherInterface: NetworkInterface,
+    connection?: Connection
+  ): Connection {
+    if (
+      !connection &&
+      (otherInterface.connection || this.connection)
+    ) {
       throw new AlreadyConnected(
-        `Can't connect interfaces. Other connections already exist.`
+        `Can't connect interfaces ${this.fullName} and ${otherInterface.fullName}. Other connections already exist.`
       );
     }
 
-    const connection: Connection =
-      this.connection ||
-      otherInterface.connection ||
-      new Connection(this, otherInterface);
-    this.connection = connection;
+    const conn: Connection =
+      connection || new Connection(this, otherInterface);
+    this.connection = conn;
 
     // Connect the other interface to this if it doesn't have a connection already
-    if (!otherInterface.connection) otherInterface.connect(this);
+    if (!otherInterface.connection)
+      otherInterface.connect(this, this.connection);
 
     this.host.logger.logEvent(
       EventType.INTERFACE_CONNECT,
@@ -69,7 +88,7 @@ class NetworkInterface implements INetworkInterface {
       otherInterface.host,
       otherInterface
     );
-    return connection;
+    return conn;
   }
 
   disconnect() {
@@ -90,16 +109,6 @@ class NetworkInterface implements INetworkInterface {
 
   getConnectedNode() {
     return this.connection?.getConnectedInterface(this).host;
-  }
-
-  get isConnected() {
-    return !!this.connection;
-  }
-
-  private throwNoIp() {
-    throw new NoAssignedIp(
-      `${this.host.name}.${this.name} interface has no IP assigned. Can't send packets.`
-    );
   }
 
   /**
