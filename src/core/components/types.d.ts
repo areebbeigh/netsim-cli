@@ -21,8 +21,10 @@ interface INetworkInterface {
 type NetworkNode = IHost | IHub | ISwitch;
 
 interface IBaseNode {
+  id: number;
   interfaces: NetworkInterface[];
   arpTable: { [key: string]: string };
+  logger: import('../logger').Logger;
 }
 interface IHost extends IBaseNode {
   send(ip: string, data: string): void;

@@ -1,6 +1,7 @@
 import Host from './components/Host';
 import Hub from './components/Hub';
 import { EngineError } from './errors';
+import Logger from './logger';
 
 enum DeviceType {
   HOST,
@@ -13,6 +14,11 @@ class Engine implements IEngine {
   private nodes: {
     [key: number]: BaseNode;
   } = {};
+  logger: Logger;
+
+  constructor() {
+    this.logger = new Logger();
+  }
 
   private getNodeClass(type: DeviceType) {
     switch (type) {
@@ -36,12 +42,11 @@ class Engine implements IEngine {
       throw new EngineError(`A Host can have only one port.`);
 
     const Node = this.getNodeClass(type);
-    const node = new Node(name, ports);
-    const nodeId = this.idCounter;
-    this.nodes[nodeId] = node;
+    const node = new Node(name, this.idCounter, this.logger, ports);
+    this.nodes[node.id] = node;
     this.idCounter++;
 
-    return [node, nodeId];
+    return [node, node.id];
   }
 
   removeDeviceById(id: number) {
@@ -55,10 +60,7 @@ class Engine implements IEngine {
   }
 
   listDevices() {
-    return Object.keys(this.nodes).map((nodeId: string) => ({
-      id: parseInt(nodeId, 10),
-      device: this.nodes[parseInt(nodeId, 10)],
-    }));
+    return Object.values(this.nodes);
   }
 
   connectById(

@@ -1,13 +1,15 @@
 type DeviceType_ = import('./engine').DeviceType;
 
 interface IEngine {
+  logger: import('./logger').Logger;
+
   addDevice(
     name: string,
     type: DeviceType_,
     ports: number
   ): [BaseNode, number];
   removeDeviceById(id: number): void;
-  listDevices(): { id: number; device: BaseNode }[];
+  listDevices(): BaseNode[];
 
   // connect(device1: BaseNode, device2: BaseNode);
   connectById(

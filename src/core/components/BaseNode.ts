@@ -1,15 +1,25 @@
 import { InterfaceNotFound, NoFreeInterfaceError } from '../errors';
+import Logger from '../logger';
 import NetworkInterface from './NetworkInterface';
 
 abstract class BaseNode implements IBaseNode {
+  id;
   name: string | undefined;
   interfaces: IBaseNode['interfaces'];
   arpTable: IBaseNode['arpTable'];
+  logger: Logger;
 
-  constructor(name?: string, interfaceCount = 1) {
+  constructor(
+    name: string,
+    id: number,
+    logger: Logger,
+    interfaceCount = 1
+  ) {
     this.name = name;
     this.interfaces = [];
     this.arpTable = {};
+    this.id = id;
+    this.logger = logger;
   }
 
   /**

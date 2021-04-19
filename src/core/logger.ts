@@ -17,7 +17,7 @@ const getHostObject = (host: BaseNode, iface?: NetworkInterface) => ({
 });
 
 const getLogMessage = (log: ILog) => {
-  return 'test';
+  return JSON.stringify(log);
 };
 
 class Logger implements ILogger {

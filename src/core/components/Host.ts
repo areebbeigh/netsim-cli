@@ -1,11 +1,17 @@
+import Logger from '../logger';
 import BaseNode from './BaseNode';
 import NetworkInterface from './NetworkInterface';
 
 class Host extends BaseNode implements IHost {
   interfaces: NetworkInterface[] = [];
 
-  constructor(name?: string, interfaceCount = 1) {
-    super(name, interfaceCount);
+  constructor(
+    name: string,
+    id: number,
+    logger: Logger,
+    interfaceCount = 1
+  ) {
+    super(name, id, logger, interfaceCount);
     if (interfaceCount > 1)
       throw new Error(`Interface count > 1 not supported for Host.`);
 
