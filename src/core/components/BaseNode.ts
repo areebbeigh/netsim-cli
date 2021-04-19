@@ -1,5 +1,5 @@
 import { InterfaceNotFound, NoFreeInterfaceError } from '../errors';
-import Logger from '../logger';
+import Logger, { EventType } from '../logger';
 import NetworkInterface from './NetworkInterface';
 
 abstract class BaseNode implements IBaseNode {
@@ -20,6 +20,8 @@ abstract class BaseNode implements IBaseNode {
     this.arpTable = {};
     this.id = id;
     this.logger = logger;
+
+    this.logger.logEvent(EventType.NODE_CREATED, this);
   }
 
   /**
@@ -118,6 +120,7 @@ abstract class BaseNode implements IBaseNode {
   addToArpTable(ip: string, mac: string) {
     // TODO: Invalidate/remove arp table entries.
     this.arpTable[ip] = mac;
+    this.logger.logEvent(EventType.ARP_LEARN, this);
   }
 }
 

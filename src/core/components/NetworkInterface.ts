@@ -6,6 +6,7 @@ import getRandomMac from '../lib/randomMac';
 import Packet from '../data/Packet';
 import Frame from '../data/Frame';
 import { InvalidIp, NoAssignedIp, AlreadyConnected } from '../errors';
+import { EventType } from '../logger';
 
 class NetworkInterface implements INetworkInterface {
   host;
@@ -42,6 +43,7 @@ class NetworkInterface implements INetworkInterface {
       );
     }
     this.ip = ip;
+    this.host.logger.logEvent(EventType.IP_ASSIGN, this.host, this);
   }
 
   connect(otherInterface: NetworkInterface): Connection {
@@ -59,11 +61,31 @@ class NetworkInterface implements INetworkInterface {
 
     // Connect the other interface to this if it doesn't have a connection already
     if (!otherInterface.connection) otherInterface.connect(this);
+
+    this.host.logger.logEvent(
+      EventType.INTERFACE_CONNECT,
+      this.host,
+      this,
+      otherInterface.host,
+      otherInterface
+    );
     return connection;
   }
 
   disconnect() {
+    const otherInterface = this.connection?.getConnectedInterface(
+      this
+    );
+    const otherHost = this.getConnectedNode();
+
     this.connection?.disconnect();
+    this.host.logger.logEvent(
+      EventType.INTERFACE_DISCONNECT,
+      this.host,
+      this,
+      otherHost,
+      otherInterface
+    );
   }
 
   getConnectedNode() {
@@ -95,6 +117,14 @@ class NetworkInterface implements INetworkInterface {
         new Packet(this.ip, ip, 'ARP')
       );
       this.sendFrame(frame);
+      this.host.logger.logEvent(
+        EventType.ARP_SEND,
+        this.host,
+        this,
+        undefined,
+        undefined,
+        frame.toString()
+      );
     } else {
       this.throwNoIp();
     }
@@ -135,6 +165,14 @@ class NetworkInterface implements INetworkInterface {
 
   sendFrame(frame: Frame): void {
     this.connection?.put(frame, this);
+    this.host.logger.logEvent(
+      EventType.FRAME_SEND,
+      this.host,
+      this,
+      undefined,
+      undefined,
+      frame.toString()
+    );
   }
 
   /**
@@ -154,7 +192,16 @@ class NetworkInterface implements INetworkInterface {
   }
 
   receive(frame: Frame): void {
+    this.host.logger.logEvent(
+      EventType.FRAME_RECEIVE,
+      this.host,
+      this,
+      undefined,
+      undefined,
+      frame.toString()
+    );
     this.host.addToArpTable(frame.packet.source, frame.source);
+
     if (!this.skipReceiveDestinationCheck) {
       if (frame.destination === this.mac) {
         // TODO: Forward frame to host
