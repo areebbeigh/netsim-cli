@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 import type { Packet } from './Packet';
 
 class Frame implements IFrame {
@@ -35,8 +37,8 @@ class Frame implements IFrame {
       2
     );
 
-    return `Frame:
-  ${json.split('\n').join('\n  ')}`;
+    return chalk`{yellow {bold Frame:}
+   ${json.split('\n').join('\n  ')}}`;
   }
 }
 

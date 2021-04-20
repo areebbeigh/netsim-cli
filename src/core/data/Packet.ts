@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 class Packet implements IPacket {
   source;
   destination;
@@ -21,8 +23,8 @@ class Packet implements IPacket {
       2
     );
 
-    return `Packet:
-  ${json.split('\n').join('\n  ')}`;
+    return chalk`{magenta {bold Packet:}
+  ${json.split('\n').join('\n  ')}}`;
   }
 }
 

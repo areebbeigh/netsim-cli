@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 enum EventType {
   ARP_SEND = 'ARP SEND',
   ARP_RECEIVE = 'ARP RECEIVE',
@@ -32,8 +34,8 @@ const getLogMessage = (log: ILog) => {
     : '';
   const eventTag = `${log.type}`;
 
-  return `${host1Tag}: ${eventTag} ${host2Tag} 
-  ${log.dataExchanged || ''}
+  return chalk`{bold.greenBright ${host1Tag}} - {cyan ${eventTag}} {bold.green ${host2Tag}}
+  {italic ${log.dataExchanged || ''}}
 `;
 };
 

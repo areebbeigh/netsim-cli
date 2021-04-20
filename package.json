@@ -25,6 +25,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
+    "chalk": "^4.1.0",
     "netmask": "^2.0.2"
   }
 }
