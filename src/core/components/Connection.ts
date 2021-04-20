@@ -11,7 +11,7 @@ class Connection implements IConnection {
   }
 
   put(frame: Frame, fromInterface: NetworkInterface): void {
-    if (![this.port1, this.port2].indexOf(fromInterface))
+    if ([this.port1, this.port2].indexOf(fromInterface) < 0)
       throw Error(`Interfaces not connected.`);
 
     const receiver =

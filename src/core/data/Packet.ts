@@ -9,6 +9,10 @@ class Packet implements IPacket {
     // TODO: Add limit to data length
     this.data = data;
   }
+
+  toString() {
+    return `<Packet: src:${this.source} dst:${this.destination} data:${this.data}>`;
+  }
 }
 
 export default Packet;

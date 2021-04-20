@@ -33,6 +33,12 @@ class Engine implements IEngine {
     }
   }
 
+  private getDeviceById(id: number) {
+    if (!this.nodes[id])
+      throw new EngineError(`Device id ${id} does not exist.`);
+    return this.nodes[id];
+  }
+
   addDevice(
     name: string,
     type: DeviceType,
@@ -53,14 +59,15 @@ class Engine implements IEngine {
     delete this.nodes[id];
   }
 
-  private getDeviceById(id: number) {
-    if (!this.nodes[id])
-      throw new EngineError(`Device id ${id} does not exist.`);
-    return this.nodes[id];
-  }
-
   listDevices() {
     return Object.values(this.nodes);
+  }
+
+  assignIp(deviceId: number, ifaceName: string, ip: string) {
+    const iface = this.getDeviceById(deviceId).getInterfaceByName(
+      ifaceName
+    );
+    iface.assignIp(ip);
   }
 
   connectById(

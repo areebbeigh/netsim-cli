@@ -38,6 +38,7 @@ module.exports = {
   },
   rules: {
     'no-console': 0,
+    '@typescript-eslint/no-empty-function': 0,
     'prettier/prettier': ['warn'],
     'import/extensions': 0,
     'no-use-before-define': 0,

@@ -125,7 +125,6 @@ class NetworkInterface implements INetworkInterface {
         null,
         new Packet(this.ip, ip, 'ARP')
       );
-      this.sendFrame(frame);
       this.host.logger.logEvent(
         EventType.ARP_SEND,
         this.host,
@@ -134,6 +133,7 @@ class NetworkInterface implements INetworkInterface {
         undefined,
         frame.toString()
       );
+      this.sendFrame(frame);
     } else {
       this.throwNoIp();
     }
@@ -173,7 +173,6 @@ class NetworkInterface implements INetworkInterface {
   }
 
   sendFrame(frame: Frame): void {
-    this.connection?.put(frame, this);
     this.host.logger.logEvent(
       EventType.FRAME_SEND,
       this.host,
@@ -182,6 +181,7 @@ class NetworkInterface implements INetworkInterface {
       undefined,
       frame.toString()
     );
+    this.connection?.put(frame, this);
   }
 
   /**
@@ -195,6 +195,14 @@ class NetworkInterface implements INetworkInterface {
         this.ip,
         forFrame.packet.source,
         'ACK'
+      );
+      this.host.logger.logEvent(
+        EventType.ACK_SEND,
+        this.host,
+        this,
+        undefined,
+        undefined,
+        packet.toString()
       );
       this.sendPacket(packet);
     } else this.throwNoIp();
@@ -213,8 +221,19 @@ class NetworkInterface implements INetworkInterface {
 
     if (!this.skipReceiveDestinationCheck) {
       if (frame.destination === this.mac) {
-        // TODO: Forward frame to host
-        this.sendAck(frame.packet.source, frame);
+        this.host.receive(frame, this);
+        if (!frame.isAck) {
+          this.sendAck(frame.packet.source, frame);
+        } else {
+          this.host.logger.logEvent(
+            EventType.ACK_RECEIVE,
+            this.host,
+            this,
+            undefined,
+            undefined,
+            frame.toString()
+          );
+        }
       }
       // ARP request
       if (
@@ -224,7 +243,7 @@ class NetworkInterface implements INetworkInterface {
         this.sendAck(frame.packet.source, frame);
       }
     } else {
-      // TODO: Forward the frame directly to the host
+      this.host.receive(frame, this);
     }
   }
 }

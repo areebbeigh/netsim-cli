@@ -18,6 +18,17 @@ class Frame implements IFrame {
   get isBroadcast() {
     return this.destination == null;
   }
+
+  get isAck() {
+    // TODO: Add headers to packet
+    return this.packet.data === 'ACK';
+  }
+
+  toString() {
+    return `<Frame src: ${this.source} dst: ${
+      this.destination
+    } data: ${this.packet.toString()}>`;
+  }
 }
 
 export default Frame;

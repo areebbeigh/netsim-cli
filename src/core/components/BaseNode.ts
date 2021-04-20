@@ -1,6 +1,7 @@
 import { InterfaceNotFound, NoFreeInterfaceError } from '../errors';
 import Logger, { EventType } from '../logger';
 import NetworkInterface from './NetworkInterface';
+import type { Frame } from '../data/Frame';
 
 abstract class BaseNode implements IBaseNode {
   id;
@@ -22,6 +23,19 @@ abstract class BaseNode implements IBaseNode {
     this.logger = logger;
 
     this.logger.logEvent(EventType.NODE_CREATED, this);
+  }
+
+  /**
+   * Returns the interfaces connected to given node
+   * @param node
+   * @returns
+   */
+  private getConnectedNodeInterfaces(node: BaseNode) {
+    const interfaces = this.interfaces.filter(
+      (iface) => iface.getConnectedNode() === node
+    );
+
+    return interfaces;
   }
 
   /**
@@ -92,19 +106,6 @@ abstract class BaseNode implements IBaseNode {
   }
 
   /**
-   * Returns the interfaces connected to given node
-   * @param node
-   * @returns
-   */
-  private getConnectedNodeInterfaces(node: BaseNode) {
-    const interfaces = this.interfaces.filter(
-      (iface) => iface.getConnectedNode() === node
-    );
-
-    return interfaces;
-  }
-
-  /**
    * Lookup this host's ARP table
    * @param ip
    */
@@ -119,8 +120,28 @@ abstract class BaseNode implements IBaseNode {
    */
   addToArpTable(ip: string, mac: string) {
     // TODO: Invalidate/remove arp table entries.
-    this.arpTable[ip] = mac;
-    this.logger.logEvent(EventType.ARP_LEARN, this);
+    if (this.arpTable[ip] !== mac) {
+      this.arpTable[ip] = mac;
+      this.logger.logEvent(
+        EventType.ARP_LEARN,
+        this,
+        undefined,
+        undefined,
+        undefined,
+        `${ip} - ${mac}`
+      );
+    }
+  }
+
+  receive(frame: Frame, iface: NetworkInterface) {
+    this.logger.logEvent(
+      EventType.DATA_RECEIVE,
+      this,
+      iface,
+      undefined,
+      undefined,
+      frame.toString()
+    );
   }
 }
 
