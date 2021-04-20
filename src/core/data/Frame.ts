@@ -25,9 +25,18 @@ class Frame implements IFrame {
   }
 
   toString() {
-    return `<Frame src: ${this.source} dst: ${
-      this.destination
-    } data: ${this.packet.toString()}>`;
+    const json = JSON.stringify(
+      {
+        src: this.source,
+        dst: this.destination,
+        packet: this.packet,
+      },
+      undefined,
+      2
+    );
+
+    return `Frame:
+  ${json.split('\n').join('\n  ')}`;
   }
 }
 

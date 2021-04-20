@@ -16,18 +16,25 @@ enum EventType {
 }
 
 const getHostObject = (host: BaseNode, iface?: NetworkInterface) => ({
-  name: host.name || 'unknown',
-  interface: iface
-    ? {
-        name: iface.name || 'unknown',
-        mac: iface.mac,
-        ip: iface.ip,
-      }
-    : undefined,
+  host,
+  interface: iface,
 });
 
 const getLogMessage = (log: ILog) => {
-  return JSON.stringify(log);
+  const hostName = log.host.host.name;
+  const interfaceFullName = log.host.interface?.fullName;
+  const otherHostName = log.otherHost?.interface;
+  const otherInterfaceFullName = log.otherHost?.interface?.fullName;
+
+  const host1Tag = `${interfaceFullName || hostName}`;
+  const host2Tag = otherHostName
+    ? `${otherInterfaceFullName || otherHostName}`
+    : '';
+  const eventTag = `${log.type}`;
+
+  return `${host1Tag}: ${eventTag} ${host2Tag} 
+  ${log.dataExchanged || ''}
+`;
 };
 
 class Logger implements ILogger {

@@ -2,7 +2,8 @@ import Engine, { DeviceType } from './core/engine';
 
 const engine = new Engine();
 
-engine.logger.listen((log) => console.log('', log, '\n'));
+engine.logger.listen((log) => console.log(log.toString()));
+// engine.logger.listen((log) => console.table(log, ['type', 'host']));
 
 const [hub, hubId] = engine.addDevice('Hub1', DeviceType.HUB, 5);
 const [h1, h1Id] = engine.addDevice('Host1', DeviceType.HOST, 1);
