@@ -1,6 +1,6 @@
 {
   "name": "netsim-cli",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A cli network simulator",
   "main": "app.ts",
   "scripts": {
@@ -12,7 +12,9 @@
   "author": "Areeb Beigh",
   "license": "ISC",
   "devDependencies": {
+    "@types/inquirer": "^7.3.1",
     "@types/netmask": "^1.0.30",
+    "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.21.0",
     "eslint": "^7.23.0",
@@ -26,6 +28,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.0",
+    "inquirer": "^8.0.0",
     "netmask": "^2.0.2"
   }
 }
