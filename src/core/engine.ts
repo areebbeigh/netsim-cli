@@ -4,9 +4,9 @@ import { EngineError } from './errors';
 import Logger from './logger';
 
 enum DeviceType {
-  HOST,
-  HUB,
-  SWITCH,
+  HOST = 'Host',
+  HUB = 'Hub',
+  SWITCH = 'Switch',
 }
 
 class Engine implements IEngine {
@@ -40,15 +40,20 @@ class Engine implements IEngine {
   }
 
   addDevice(
-    name: string,
     type: DeviceType,
-    ports: number
+    ports: number,
+    name?: string
   ): [BaseNode, number] {
     if (type === DeviceType.HOST && ports > 1)
       throw new EngineError(`A Host can have only one port.`);
 
     const Node = this.getNodeClass(type);
-    const node = new Node(name, this.idCounter, this.logger, ports);
+    const node = new Node(
+      name || `${type}${this.idCounter}`,
+      this.idCounter,
+      this.logger,
+      ports
+    );
     this.nodes[node.id] = node;
     this.idCounter++;
 
@@ -97,3 +102,4 @@ class Engine implements IEngine {
 
 export default Engine;
 export { DeviceType };
+export type { Engine };

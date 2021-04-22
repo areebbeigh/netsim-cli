@@ -35,8 +35,7 @@ const getLogMessage = (log: ILog) => {
   const eventTag = `${log.type}`;
 
   return chalk`{bold.greenBright ${host1Tag}} - {cyan ${eventTag}} {bold.green ${host2Tag}}
-  {italic ${log.dataExchanged || ''}}
-`;
+  {italic ${log.dataExchanged || ''}}`;
 };
 
 class Logger implements ILogger {

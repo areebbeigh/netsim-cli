@@ -4,9 +4,9 @@ interface IEngine {
   logger: import('./logger').Logger;
 
   addDevice(
-    name: string,
     type: DeviceType_,
-    ports: number
+    ports: number,
+    name?: string
   ): [BaseNode, number];
   removeDeviceById(id: number): void;
   listDevices(): BaseNode[];
