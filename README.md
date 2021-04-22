@@ -1,5 +1,5 @@
 # netsim-cli
-A naive network simulator written in TypeScript + NodeJs.
+A naive network simulator written in TypeScript + NodeJs | Work in progress.
 
 [![asciicast](https://asciinema.org/a/409313.svg)](https://asciinema.org/a/409313)
 
