@@ -56,6 +56,12 @@ class NetworkInterface implements INetworkInterface {
         'IP Address for a host interface cannot be the network default gateway.'
       );
     }
+    if (ip === netmask.broadcast) {
+      throw new InvalidIp('IP cannot be broadcast IP.');
+    }
+    if (ip === netmask.base) {
+      throw new InvalidIp('IP cannot be the network ID.');
+    }
     this.ip = ip;
     this.host.logger.logEvent(EventType.IP_ASSIGN, this.host, this);
   }
