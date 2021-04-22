@@ -4,11 +4,15 @@ import inquirer from 'inquirer';
 
 import Engine from './core/engine';
 import add from './commands/add';
+import assignIp from './commands/assign-ip';
+import listDevices from './commands/list-devices';
+import connect from './commands/connect';
+import send from './commands/send';
 
 const engine = new Engine();
 engine.logger.listen((log) => console.log(log.toString()));
 
-const commands = [add];
+const commands = [add, assignIp, listDevices, connect, send];
 const parser = yargs
   .exitProcess(false)
   .strict(true)
