@@ -30,7 +30,7 @@ interface ILog {
     interface?: NetworkInterface;
   };
   otherHost?: ILog['host'];
-  dataExchanged?: string;
+  dataExchanged?: any;
   toString(): string;
 }
 

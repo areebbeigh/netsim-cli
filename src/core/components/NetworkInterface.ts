@@ -137,7 +137,7 @@ class NetworkInterface implements INetworkInterface {
         this,
         undefined,
         undefined,
-        frame.toString()
+        frame
       );
       this.sendFrame(frame);
     } else {
@@ -185,7 +185,7 @@ class NetworkInterface implements INetworkInterface {
       this,
       undefined,
       undefined,
-      frame.toString()
+      frame
     );
     this.connection?.put(frame, this);
   }
@@ -208,7 +208,7 @@ class NetworkInterface implements INetworkInterface {
         this,
         undefined,
         undefined,
-        packet.toString()
+        packet
       );
       this.sendPacket(packet);
     } else this.throwNoIp();
@@ -221,7 +221,7 @@ class NetworkInterface implements INetworkInterface {
       this,
       undefined,
       undefined,
-      frame.toString()
+      frame
     );
     this.host.addToArpTable(frame.packet.source, frame.source);
 
@@ -237,7 +237,7 @@ class NetworkInterface implements INetworkInterface {
             this,
             undefined,
             undefined,
-            frame.toString()
+            frame
           );
         }
       }

@@ -13,18 +13,9 @@ class Packet implements IPacket {
   }
 
   toString() {
-    const json = JSON.stringify(
-      {
-        src: this.source,
-        dst: this.destination,
-        data: this.data,
-      },
-      undefined,
-      2
-    );
-
-    return chalk`{magenta {bold Packet:}
-  ${json.split('\n').join('\n  ')}}`;
+    return chalk`{magenta {bold Packet:}}
+    {bold src:} ${this.source} | {bold dst:} ${this.destination}
+    data: ${this.data}`;
   }
 }
 

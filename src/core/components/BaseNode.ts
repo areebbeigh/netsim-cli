@@ -140,7 +140,7 @@ abstract class BaseNode implements IBaseNode {
       iface,
       undefined,
       undefined,
-      frame.toString()
+      frame
     );
   }
 }

@@ -33,9 +33,14 @@ const getLogMessage = (log: ILog) => {
     ? `${otherInterfaceFullName || otherHostName}`
     : '';
   const eventTag = `${log.type}`;
+  let data = log.dataExchanged?.toString();
+
+  if (log.type === EventType.ARP_SEND) {
+    data = `Who has IP ${log.dataExchanged?.packet?.destination}?`;
+  }
 
   return chalk`{bold.greenBright ${host1Tag}} - {cyan ${eventTag}} {bold.green ${host2Tag}}
-  {italic ${log.dataExchanged || ''}}`;
+  {italic ${data || ''}}`.trim();
 };
 
 class Logger implements ILogger {
@@ -47,7 +52,7 @@ class Logger implements ILogger {
     iface?: NetworkInterface,
     otherHost?: BaseNode,
     otherIface?: NetworkInterface,
-    dataExchanged?: string
+    dataExchanged?: any
   ) {
     const log: ILog = {
       type: event,
