@@ -23,7 +23,7 @@ class Host extends BaseNode implements IHost {
     return this.interfaces[0];
   }
 
-  receive(frame: Frame) {}
+  receive() {}
 
   send(ip: string, data: string) {
     this.iface.sendData(ip, data);

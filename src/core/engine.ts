@@ -1,5 +1,6 @@
 import Host from './components/Host';
 import Hub from './components/Hub';
+import Switch from './components/Switch';
 import { EngineError } from './errors';
 import Logger from './logger';
 
@@ -26,6 +27,8 @@ class Engine implements IEngine {
         return Host;
       case DeviceType.HUB:
         return Hub;
+      case DeviceType.SWITCH:
+        return Switch;
       default:
         throw new EngineError(
           `${type} does not have a matching class`

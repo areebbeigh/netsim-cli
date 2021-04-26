@@ -30,4 +30,6 @@ interface IHost extends IBaseNode {
   send(ip: string, data: string): void;
 }
 interface IHub extends IBaseNode {}
-interface ISwitch extends IBaseNode {}
+interface ISwitch extends IBaseNode {
+  
+}

@@ -10,7 +10,7 @@ import connect from './commands/connect';
 import send from './commands/send';
 
 const engine = new Engine();
-engine.logger.listen((log) => console.log(log.toString()));
+engine.logger.listen((log) => console.log(log.toString(), '\n---'));
 
 const commands = [add, assignIp, listDevices, connect, send];
 const parser = yargs
@@ -58,6 +58,18 @@ Github: {blue https://github.com/areebbeigh/netsim-cli/}`);
         argParser(line);
         prompt();
       });
+    // [
+    //   'add switch 5',
+    //   'add host',
+    //   'add host',
+    //   'add host',
+    //   'connect 1 eth0 2 eth0',
+    //   'connect 1 eth1 3 eth0',
+    //   'connect 1 eth2 4 eth0',
+    //   'assign-ip 2 eth0 10.0.0.2',
+    //   'assign-ip 3 eth0 10.0.0.3',
+    //   'send 2 10.0.0.3 hi',
+    // ].forEach(argParser);
   };
   prompt();
 }

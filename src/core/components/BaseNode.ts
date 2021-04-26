@@ -128,11 +128,16 @@ abstract class BaseNode implements IBaseNode {
         undefined,
         undefined,
         undefined,
-        `${ip} - ${mac}`
+        `${ip} has mac ${mac}`
       );
     }
   }
 
+  /**
+   * Simply logs a DATA_RECEIVE by default
+   * @param frame
+   * @param iface
+   */
   receive(frame: Frame, iface: NetworkInterface) {
     this.logger.logEvent(
       EventType.DATA_RECEIVE,
