@@ -54,5 +54,6 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     'class-methods-use-this': 0,
+    'consistent-return': 0,
   },
 };

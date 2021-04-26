@@ -8,11 +8,12 @@ import assignIp from './commands/assign-ip';
 import listDevices from './commands/list-devices';
 import connect from './commands/connect';
 import send from './commands/send';
+import import_ from './commands/import';
 
 const engine = new Engine();
 engine.logger.listen((log) => console.log(log.toString(), '\n---'));
 
-const commands = [add, assignIp, listDevices, connect, send];
+const commands = [add, assignIp, listDevices, connect, send, import_];
 const parser = yargs
   .exitProcess(false)
   .strict(true)
@@ -29,12 +30,16 @@ const parser = yargs
 commands.forEach((cmd) => parser.command(cmd));
 
 function argParser(cmdString: string) {
+  if (cmdString.trim().length <= 0 || cmdString.startsWith('#'))
+    return;
+
   const args = cmdString.trim().split(' ');
   return parser.parse(args, {
     engine,
     errorHandler: (e: Error) => {
       console.log(chalk`{bold.red ${e.name}}: ${e.message}`);
     },
+    argParser,
   });
 }
 
@@ -58,18 +63,7 @@ Github: {blue https://github.com/areebbeigh/netsim-cli/}`);
         argParser(line);
         prompt();
       });
-    // [
-    //   'add switch 5',
-    //   'add host',
-    //   'add host',
-    //   'add host',
-    //   'connect 1 eth0 2 eth0',
-    //   'connect 1 eth1 3 eth0',
-    //   'connect 1 eth2 4 eth0',
-    //   'assign-ip 2 eth0 10.0.0.2',
-    //   'assign-ip 3 eth0 10.0.0.3',
-    //   'send 2 10.0.0.3 hi',
-    // ].forEach(argParser);
+    // argParser('import ./sample.nsim');
   };
   prompt();
 }

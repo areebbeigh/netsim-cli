@@ -1,0 +1,12 @@
+add switch 5
+add host
+add host
+add host
+connect 1 eth0 2 eth0
+connect 1 eth1 3 eth0
+connect 1 eth2 4 eth0
+
+# this is a comment
+assign-ip 2 eth0 10.0.0.2
+assign-ip 3 eth0 10.0.0.3
+send 2 10.0.0.3 hi

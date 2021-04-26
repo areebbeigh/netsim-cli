@@ -1,5 +1,3 @@
-// import { CommandModule } from 'yargs';
-
 interface Arguments {
   [argName: string]: unknown;
   _: (string | number)[];
@@ -7,4 +5,5 @@ interface Arguments {
 
   engine?: import('../core/engine').Engine;
   errorHandler?: (e: Error) => void;
+  argParser?: (cmdString: string) => void;
 }

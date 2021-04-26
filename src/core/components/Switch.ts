@@ -19,6 +19,7 @@ class Switch extends BaseNode implements ISwitch {
   private doMacLookup(mac: string): NetworkInterface | undefined {
     return this.macTable[mac];
   }
+
   private addToMacTable(mac: string, iface: NetworkInterface) {
     if (this.macTable[mac] !== iface) {
       this.macTable[mac] = iface;
