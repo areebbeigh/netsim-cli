@@ -25,7 +25,8 @@ const parser = yargs
     // won't actually exit https://github.com/yargs/yargs/issues/1196
     yargs.exit(0, err);
   })
-  .help('help');
+  .help('help')
+  .wrap(null);
 
 commands.forEach((cmd) => parser.command(cmd));
 parser.command({
