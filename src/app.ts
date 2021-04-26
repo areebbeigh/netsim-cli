@@ -28,6 +28,13 @@ const parser = yargs
   .help('help');
 
 commands.forEach((cmd) => parser.command(cmd));
+parser.command({
+  command: 'exit',
+  describe: 'exit the cli',
+  handler: () => {
+    process.exit(0);
+  },
+});
 
 function argParser(cmdString: string) {
   if (cmdString.trim().length <= 0 || cmdString.startsWith('#'))
