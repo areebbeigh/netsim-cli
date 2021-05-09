@@ -22,8 +22,7 @@ class Frame implements IFrame {
   }
 
   get isAck() {
-    // TODO: Add headers to packet
-    return this.packet.data === 'ACK';
+    return this.packet.isAck;
   }
 
   toString() {

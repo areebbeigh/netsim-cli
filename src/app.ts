@@ -58,6 +58,7 @@ Type 'help' to get started.
 Github: {blue https://github.com/areebbeigh/netsim-cli/}`);
 
   const prompt = () => {
+    argParser('import ./sample2.nsim');
     inquirer
       .prompt([
         {
@@ -71,7 +72,6 @@ Github: {blue https://github.com/areebbeigh/netsim-cli/}`);
         argParser(line);
         prompt();
       });
-    // argParser('import ./sample.nsim');
   };
   prompt();
 }

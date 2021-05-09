@@ -7,8 +7,12 @@ import Packet from '../data/Packet';
 import Frame from '../data/Frame';
 import { InvalidIp, NoAssignedIp, AlreadyConnected } from '../errors';
 import { EventType } from '../logger';
+import config, { FlowControl } from '../config';
 
 class NetworkInterface implements INetworkInterface {
+  private flowControllers: {
+    [key in FlowControl]?: IFlowController;
+  } = {};
   host;
   skipReceiveDestinationCheck;
   name;
@@ -39,6 +43,16 @@ class NetworkInterface implements INetworkInterface {
 
   get fullName() {
     return `${this.host.name}.${this.name}`;
+  }
+
+  get flowController() {
+    this.flowControllers[config.FLOW_CONTROL] =
+      this.flowControllers[config.FLOW_CONTROL] ||
+      new config.FlowController(this);
+
+    return this.flowControllers[
+      config.FLOW_CONTROL
+    ] as IFlowController;
   }
 
   private throwNoIp() {
@@ -146,9 +160,12 @@ class NetworkInterface implements INetworkInterface {
   }
 
   sendData(ip: string, data: string): void {
-    if (this.ip) {
-      const packet = new Packet(this.ip, ip, data);
-      this.sendPacket(packet);
+    const senderIp = this.ip;
+    if (senderIp) {
+      const packets = Array.from(data).map(
+        (char) => new Packet(senderIp, ip, char)
+      );
+      this.flowController.sendPackets(packets);
     } else this.throwNoIp();
   }
 
@@ -162,19 +179,29 @@ class NetworkInterface implements INetworkInterface {
         // Do ARP lookup for default gateway if destination is remote
         arpLookupIp = ipBlock.base;
       }
-      let destinationMac = this.host.lookupArpTable(arpLookupIp);
-      if (!destinationMac) {
+
+      if (!this.host.lookupArpTable(arpLookupIp)) {
         this.doArpLookup(arpLookupIp);
-        // TODO: How do we simulate network delays here?
-        destinationMac = this.host.lookupArpTable(arpLookupIp);
       }
 
-      if (!destinationMac) {
-        // Packet dropped
-      } else {
+      let arpRetries = 0;
+      const sendIntervalId = setInterval(() => {
+        const destinationMac = this.host.lookupArpTable(arpLookupIp);
+        arpRetries++;
+
+        if (!destinationMac) {
+          if (arpRetries >= 5) {
+            // Failed to arp lookup the receiver
+            clearInterval(sendIntervalId);
+            return;
+          }
+          return;
+        }
+
         const frame = new Frame(this.mac, destinationMac, packet);
         this.sendFrame(frame);
-      }
+        clearInterval(sendIntervalId);
+      }, 500);
     } else this.throwNoIp();
   }
 
@@ -195,13 +222,14 @@ class NetworkInterface implements INetworkInterface {
    * @param ip
    * @param frame
    */
-  sendAck(ip: string, forFrame: Frame) {
+  sendAck(ip: string, forFrame: Frame, data?: string) {
     if (this.ip) {
       const packet = new Packet(
         this.ip,
         forFrame.packet.source,
-        'ACK'
+        data || ''
       );
+      packet.isAck = true;
       this.host.logger.logEvent(
         EventType.ACK_SEND,
         this.host,
@@ -228,9 +256,8 @@ class NetworkInterface implements INetworkInterface {
     if (!this.skipReceiveDestinationCheck) {
       if (frame.destination === this.mac) {
         this.host.receive(frame, this);
-        if (!frame.isAck) {
-          this.sendAck(frame.packet.source, frame);
-        } else {
+
+        if (frame.isAck) {
           this.host.logger.logEvent(
             EventType.ACK_RECEIVE,
             this.host,
@@ -240,6 +267,9 @@ class NetworkInterface implements INetworkInterface {
             frame
           );
         }
+
+        if (frame.packet.data !== '')
+          this.flowController.receive(frame);
       }
       // ARP request
       if (

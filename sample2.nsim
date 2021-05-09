@@ -1,0 +1,6 @@
+add host
+add host
+connect 1 eth0 2 eth0
+assign-ip 1 eth0 10.0.0.2
+assign-ip 2 eth0 10.0.0.3
+send 2 10.0.0.2 hi

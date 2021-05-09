@@ -1,4 +1,6 @@
 interface IPacket {
+  seqNo?: number;
+  isAck: boolean;
   source: string;
   destination: string;
   data: string;
