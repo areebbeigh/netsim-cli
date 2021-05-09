@@ -18,6 +18,8 @@ enum EventType {
   IP_ASSIGN = 'IP ASSIGN',
   INTERFACE_CONNECT = 'INTERFACE CONNECT',
   INTERFACE_DISCONNECT = 'INTERFACE DISCONNECT',
+
+  LINK_FAILURE = 'LINK FAILURE',
 }
 
 const getHostObject = (host: BaseNode, iface?: NetworkInterface) => ({

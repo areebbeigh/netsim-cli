@@ -180,18 +180,25 @@ class NetworkInterface implements INetworkInterface {
         arpLookupIp = ipBlock.base;
       }
 
-      if (!this.host.lookupArpTable(arpLookupIp)) {
-        this.doArpLookup(arpLookupIp);
-      }
-
       let arpRetries = 0;
       const sendIntervalId = setInterval(() => {
         const destinationMac = this.host.lookupArpTable(arpLookupIp);
-        arpRetries++;
+        if (!destinationMac) {
+          this.doArpLookup(arpLookupIp);
+        }
 
         if (!destinationMac) {
+          arpRetries++;
           if (arpRetries >= 5) {
             // Failed to arp lookup the receiver
+            this.host.logger.logEvent(
+              EventType.LINK_FAILURE,
+              this.host,
+              this,
+              undefined,
+              undefined,
+              `ARP Retries: ${arpRetries}`
+            );
             clearInterval(sendIntervalId);
             return;
           }

@@ -1,14 +1,17 @@
+import config from '../config';
 import Frame from '../data/Frame';
 import Packet from '../data/Packet';
+import { EventType } from '../logger';
 
 class StopAndWaitARQ implements IFlowController {
   private iface: NetworkInterface;
   private wait = false;
+  private failed = false;
   private pendingAckIntervalId: NodeJS.Timeout | undefined;
 
   sendWindowSize = 2;
   timeoutLimit = 2000;
-  retryLimit = 1;
+  retryLimit = config.PACKET_RETRIES;
 
   constructor(iface: NetworkInterface) {
     this.iface = iface;
@@ -24,7 +27,7 @@ class StopAndWaitARQ implements IFlowController {
     this.wait = true;
     this.pendingAckIntervalId = setInterval(() => {
       if (attempts >= this.retryLimit) {
-        this.failPacket(packet);
+        this.failPacket(packet, attempts);
         return;
       }
       this.iface.sendPacket(packet);
@@ -43,8 +46,19 @@ class StopAndWaitARQ implements IFlowController {
     this.cleanUp();
   }
 
-  private failPacket(packet: Packet) {
+  private failPacket(packet: Packet, retries: number) {
     this.cleanUp();
+    this.failed = true;
+    this.logger.logEvent(
+      EventType.LINK_FAILURE,
+      this.iface.host,
+      this.iface,
+      undefined,
+      undefined,
+      `${packet}
+      
+  Packet dropped. Retries: ${retries}`
+    );
   }
 
   sendPackets(packets: Packet[]) {
@@ -61,7 +75,7 @@ class StopAndWaitARQ implements IFlowController {
       //     idx
       //   );
       if (this.wait) return;
-      if (idx >= packets.length) {
+      if (idx >= packets.length || this.failed) {
         clearInterval(sendIntervalId);
         return;
       }

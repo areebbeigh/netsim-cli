@@ -10,6 +10,7 @@ enum FlowControl {
  */
 class Config {
   FLOW_CONTROL = FlowControl.STOP_AND_WAIT_ARQ;
+  PACKET_RETRIES = 2;
 
   get FlowController() {
     return {

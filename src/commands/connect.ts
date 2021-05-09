@@ -2,7 +2,7 @@ import { CommandModule } from 'yargs';
 
 export default {
   command:
-    'connect <deviceId1> <interface1> <deviceId2> <interface2>',
+    'connect <deviceId1> <interface1> <deviceId2> <interface2> [successProbability]',
   describe: 'Connect two device interfaces',
   builder: (yargs) => {
     return yargs
@@ -22,8 +22,12 @@ export default {
         type: 'string',
         describe: 'the second interface name e.g: eth0, eth1, etc.',
       })
+      .option('successProbability', {
+        type: 'number',
+        describe: 'the success rate of sending on this link',
+      })
       .usage(
-        `connect <deviceId1> <interface1> <deviceId2> <interface2>`
+        `connect <deviceId1> <interface1> <deviceId2> <interface2> [successProbability]`
       );
   },
   handler: (argv: Arguments) => {
@@ -35,13 +39,17 @@ export default {
       interface2,
     } = argv;
 
+    let { successProbability } = argv;
+    if (successProbability === undefined) successProbability = 1;
+
     if (deviceId1 && interface1 && deviceId2 && interface2) {
       try {
         engine?.connectById(
           deviceId1 as number,
           interface1 as string,
           deviceId2 as number,
-          interface2 as string
+          interface2 as string,
+          successProbability as number
         );
       } catch (e) {
         (argv.errorHandler || (() => {}))(e);

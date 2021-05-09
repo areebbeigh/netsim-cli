@@ -82,7 +82,8 @@ class Engine implements IEngine {
     deviceId1: number,
     deviceIface1: string,
     deviceId2: number,
-    deviceIface2: string
+    deviceIface2: string,
+    successProbability = 1
   ) {
     const iface1 = this.getDeviceById(deviceId1).getInterfaceByName(
       deviceIface1
@@ -91,7 +92,8 @@ class Engine implements IEngine {
       deviceIface2
     );
 
-    iface1?.connect(iface2);
+    const connection = iface1?.connect(iface2);
+    connection.successProbability = successProbability;
   }
 
   send(hostId: number, ip: string, data: string) {
