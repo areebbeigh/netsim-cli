@@ -56,5 +56,6 @@ module.exports = {
     'class-methods-use-this': 0,
     'consistent-return': 0,
     'no-underscore-dangle': 0,
+    '@typescript-eslint/no-explicit-any': 0,
   },
 };

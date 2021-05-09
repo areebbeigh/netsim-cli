@@ -8,6 +8,8 @@ import Frame from '../data/Frame';
 import { InvalidIp, NoAssignedIp, AlreadyConnected } from '../errors';
 import { EventType } from '../logger';
 import config, { FlowControl } from '../config';
+import { getFlowController } from '../flow-control/helpers';
+import setInterval from '../lib/setInterval';
 
 class NetworkInterface implements INetworkInterface {
   private flowControllers: {
@@ -46,9 +48,11 @@ class NetworkInterface implements INetworkInterface {
   }
 
   get flowController() {
+    const FlowController = getFlowController(config.FLOW_CONTROL);
+
     this.flowControllers[config.FLOW_CONTROL] =
       this.flowControllers[config.FLOW_CONTROL] ||
-      new config.FlowController(this);
+      new FlowController(this);
 
     return this.flowControllers[
       config.FLOW_CONTROL

@@ -2,6 +2,7 @@ import config from '../config';
 import Frame from '../data/Frame';
 import Packet from '../data/Packet';
 import { EventType } from '../logger';
+import setInterval from '../lib/setInterval';
 
 class StopAndWaitARQ implements IFlowController {
   private iface: NetworkInterface;
