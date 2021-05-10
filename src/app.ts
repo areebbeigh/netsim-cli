@@ -9,11 +9,20 @@ import listDevices from './commands/list-devices';
 import connect from './commands/connect';
 import send from './commands/send';
 import import_ from './commands/import';
+import flowControl from './commands/flow-control';
 
 const engine = new Engine();
 engine.logger.listen((log) => console.log(log.toString(), '\n---'));
 
-const commands = [add, assignIp, listDevices, connect, send, import_];
+const commands = [
+  add,
+  assignIp,
+  listDevices,
+  connect,
+  send,
+  import_,
+  flowControl,
+];
 const parser = yargs
   .exitProcess(false)
   .strict(true)

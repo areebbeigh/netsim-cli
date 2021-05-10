@@ -1,3 +1,4 @@
+#flow-control go-back-n
 add host
 add host
 connect 1 eth0 2 eth0 0.2

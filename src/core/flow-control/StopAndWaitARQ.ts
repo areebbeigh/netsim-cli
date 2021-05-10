@@ -3,9 +3,11 @@ import Frame from '../data/Frame';
 import Packet from '../data/Packet';
 import { EventType } from '../logger';
 import setInterval from '../lib/setInterval';
+import BaseFlowController from './BaseFlowController';
 
-class StopAndWaitARQ implements IFlowController {
-  private iface: NetworkInterface;
+class StopAndWaitARQ
+  extends BaseFlowController
+  implements IFlowController {
   private wait = false;
   private failed = false;
   private pendingAckIntervalId: NodeJS.Timeout | undefined;
@@ -13,10 +15,6 @@ class StopAndWaitARQ implements IFlowController {
   sendWindowSize = 2;
   timeoutLimit = 2000;
   retryLimit = config.PACKET_RETRIES;
-
-  constructor(iface: NetworkInterface) {
-    this.iface = iface;
-  }
 
   get logger() {
     return this.iface.host.logger;
@@ -63,9 +61,7 @@ class StopAndWaitARQ implements IFlowController {
   }
 
   sendPackets(packets: Packet[]) {
-    packets.forEach((packet, idx) => {
-      packet.seqNo = idx % this.sendWindowSize;
-    });
+    this.assignSequenceNos(packets);
 
     let idx = 0;
     const sendIntervalId = setInterval(() => {

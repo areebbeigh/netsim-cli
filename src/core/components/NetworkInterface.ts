@@ -15,6 +15,10 @@ class NetworkInterface implements INetworkInterface {
   private flowControllers: {
     [key in FlowControl]?: IFlowController;
   } = {};
+  // The packet being currently send. We allow a network interface to send only
+  // one packet at a time because of races that occur in multiple sendPacket calls
+  // when we need to do an ARP lookup before sending the packet in one of the calls
+  private currentlySending: string | undefined;
   host;
   skipReceiveDestinationCheck;
   name;
@@ -186,6 +190,12 @@ class NetworkInterface implements INetworkInterface {
 
       let arpRetries = 0;
       const sendIntervalId = setInterval(() => {
+        if (this.currentlySending === undefined)
+          this.currentlySending = packet.uuid;
+
+        // There is a previous packet waiting to be sent. We have to wait.
+        if (this.currentlySending !== packet.uuid) return;
+
         const destinationMac = this.host.lookupArpTable(arpLookupIp);
         if (!destinationMac) {
           this.doArpLookup(arpLookupIp);
@@ -208,9 +218,9 @@ class NetworkInterface implements INetworkInterface {
           }
           return;
         }
-
         const frame = new Frame(this.mac, destinationMac, packet);
         this.sendFrame(frame);
+        this.currentlySending = undefined;
         clearInterval(sendIntervalId);
       }, 500);
     } else this.throwNoIp();
@@ -279,6 +289,7 @@ class NetworkInterface implements INetworkInterface {
           );
         }
 
+        // TODO: this is not forwarding ARPs to the flow controller
         if (frame.packet.data !== '')
           this.flowController.receive(frame);
       }
