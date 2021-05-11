@@ -2,7 +2,7 @@ import { CommandModule } from 'yargs';
 
 import { DeviceType } from '../core/engine';
 
-const deviceChoices = ['host', 'hub', 'switch'];
+const deviceChoices = ['host', 'hub', 'switch', 'bridge'];
 export default {
   command: 'add <device> [ports]',
   describe: 'Create a new device',
@@ -22,6 +22,7 @@ export default {
       hub: DeviceType.HUB,
       host: DeviceType.HOST,
       switch: DeviceType.SWITCH,
+      bridge: DeviceType.BRIDGE,
     }[argv.device as string];
 
     if (deviceType) {

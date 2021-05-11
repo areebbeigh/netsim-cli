@@ -1,3 +1,4 @@
+import Bridge from './components/Bridge';
 import Host from './components/Host';
 import Hub from './components/Hub';
 import Switch from './components/Switch';
@@ -8,6 +9,7 @@ enum DeviceType {
   HOST = 'Host',
   HUB = 'Hub',
   SWITCH = 'Switch',
+  BRIDGE = 'Bridge',
 }
 
 class Engine implements IEngine {
@@ -29,6 +31,8 @@ class Engine implements IEngine {
         return Hub;
       case DeviceType.SWITCH:
         return Switch;
+      case DeviceType.BRIDGE:
+        return Bridge;
       default:
         throw new EngineError(
           `${type} does not have a matching class`

@@ -8,6 +8,7 @@ export default {
     return yargs
       .positional('file', {
         type: 'string',
+        choices: ['stop-and-wait', 'go-back-n'],
       })
       .usage(
         `flow-control <flowControlName> (stop-and-wait, go-back-n)`
