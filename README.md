@@ -19,13 +19,15 @@ $ nestim-cli > help
 app.js [command]
 
 Commands:
-  app.js add <device> [ports]                                       Create a new device
-  app.js assign-ip <deviceId> <interface> <ip>                      Assign IP to a device interface
-  app.js list-devices                                               List all devices
-  app.js connect <deviceId1> <interface1> <deviceId2> <interface2>  Connect two device interfaces
-  app.js send <deviceId> <destinationIp> <data>                     Send data from a device to a destination ip
-  app.js import <file>                                              Import a set of instructions from file
-  app.js exit                                                       exit the cli
+  app.js add <device> [ports]                                                            Create a new device
+  app.js assign-ip <deviceId> <interface> <ip>                                           Assign IP to a device interface
+  app.js list-devices                                                                    List all devices
+  app.js connect <deviceId1> <interface1> <deviceId2> <interface2> [successProbability]  Connect two device interfaces
+  app.js send <deviceId> <destinationIp> <data>                                          Send data from a device to a destination ip
+  app.js import <file>                                                                   Import a set of instructions from file
+  app.js flow-control <flowControlName>                                                  Import a set of instructions from file
+  app.js stats                                                                           Output stats on current topologies
+  app.js exit                                                                            exit the cli
 
 Options:
   --version  Show version number  [boolean]
