@@ -53,20 +53,12 @@ function argParser(cmdString: string) {
     return;
 
   const args = cmdString.trim().split(' ');
-  return new Promise<void>((resolve, reject) => {
-    parser.parse(
-      args,
-      {
-        engine,
-        errorHandler: (e: Error) => {
-          console.log(chalk`{bold.red ${e.name}}: ${e.message}`);
-        },
-        argParser,
-      },
-      () => {
-        resolve();
-      }
-    );
+  return parser.parse(args, {
+    engine,
+    errorHandler: (e: Error) => {
+      console.log(chalk`{bold.red ${e.name}}: ${e.message}`);
+    },
+    argParser,
   });
 }
 
@@ -88,9 +80,9 @@ Github: {blue https://github.com/areebbeigh/netsim-cli/}`);
         },
       ])
       .then(({ line }) => {
-        return argParser(line);
-      })
-      .then(prompt);
+        argParser(line);
+        prompt();
+      });
   };
   prompt();
 }
