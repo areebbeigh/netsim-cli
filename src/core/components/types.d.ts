@@ -22,6 +22,8 @@ type NetworkNode = IHost | IHub | ISwitch;
 
 interface IBaseNode {
   id: number;
+  breaksCollisionDomain: boolean;
+  breaksBroadcastDomain: boolean;
   interfaces: NetworkInterface[];
   arpTable: { [key: string]: string };
   logger: import('../logger').Logger;

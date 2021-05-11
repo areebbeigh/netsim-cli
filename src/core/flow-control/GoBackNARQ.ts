@@ -24,7 +24,6 @@ class GoBackNARQ
   }
 
   private cleanUp() {
-    console.log('cleaning up');
     this.firstOutStanding = 0;
     this.nextToSend = 0;
     if (this.firstOutstandingTimerId) {

@@ -10,6 +10,7 @@ import connect from './commands/connect';
 import send from './commands/send';
 import import_ from './commands/import';
 import flowControl from './commands/flow-control';
+import stats from './commands/stats';
 
 const engine = new Engine();
 engine.logger.listen((log) => console.log(log.toString(), '\n---'));
@@ -22,6 +23,7 @@ const commands = [
   send,
   import_,
   flowControl,
+  stats,
 ];
 const parser = yargs
   .exitProcess(false)
@@ -67,7 +69,7 @@ Type 'help' to get started.
 Github: {blue https://github.com/areebbeigh/netsim-cli/}`);
 
   const prompt = () => {
-    // argParser('import ./sample2.nsim');
+    // argParser('import ./sample4.nsim');
     inquirer
       .prompt([
         {

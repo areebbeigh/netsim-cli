@@ -4,6 +4,8 @@ import NetworkInterface from './NetworkInterface';
 import type { Frame } from '../data/Frame';
 
 abstract class BaseNode implements IBaseNode {
+  abstract breaksBroadcastDomain: boolean;
+  abstract breaksCollisionDomain: boolean;
   id;
   name: string | undefined;
   interfaces: IBaseNode['interfaces'];
@@ -75,6 +77,12 @@ abstract class BaseNode implements IBaseNode {
       if (!this.interfaces[i].isConnected) return this.interfaces[i];
     }
     return null;
+  }
+
+  getConnectedDevices(): BaseNode[] {
+    return this.interfaces
+      .filter((iface) => iface.isConnected)
+      .map((iface) => iface.getConnectedNode()) as BaseNode[];
   }
 
   /**

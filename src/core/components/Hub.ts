@@ -3,6 +3,9 @@ import Logger from '../logger';
 import BaseNode from './BaseNode';
 
 class Hub extends BaseNode implements IHub {
+  breaksCollisionDomain = false;
+  breaksBroadcastDomain = false;
+
   constructor(
     name: string,
     id: number,

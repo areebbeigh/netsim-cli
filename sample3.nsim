@@ -1,0 +1,17 @@
+add host
+add host
+add switch 3
+# 3
+connect 1 eth0 3 eth0
+connect 2 eth0 3 eth1
+
+add hub 5
+add host
+add host
+add host
+# 7
+connect 5 eth0 4 eth0
+connect 6 eth0 4 eth1
+connect 7 eth0 4 eth2
+connect 4 eth3 3 eth2
+stats

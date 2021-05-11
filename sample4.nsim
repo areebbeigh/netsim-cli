@@ -1,0 +1,34 @@
+add host
+add host
+add switch 3
+# 3
+connect 1 eth0 3 eth0
+connect 2 eth0 3 eth1
+
+add hub 5
+add host
+add host
+add host
+# 7
+connect 5 eth0 4 eth0
+connect 6 eth0 4 eth1
+connect 7 eth0 4 eth2
+connect 4 eth3 3 eth2
+stats
+
+add switch 4
+connect 8 eth0 4 eth4
+add hub 3
+connect 9 eth0 8 eth1
+stats
+
+add host
+connect 10 eth0 8 eth2
+add host
+connect 11 eth0 8 eth3
+add host
+connect 12 eth0 9 eth1
+add host
+connect 13 eth0 9 eth2
+
+stats

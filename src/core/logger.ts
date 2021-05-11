@@ -44,6 +44,10 @@ const getLogMessage = (log: ILog) => {
     data = `Who has IP ${log.dataExchanged?.packet?.destination}?`;
   }
 
+  if (log.type === EventType.NODE_CREATED) {
+    data = `${host1Tag}.id: ${log.host.host.id}`;
+  }
+
   return chalk`{bold.greenBright ${host1Tag}} - {cyan ${eventTag}} {bold.green ${host2Tag}}
   {italic ${data || ''}}`.trim();
 };

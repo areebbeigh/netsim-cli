@@ -20,7 +20,12 @@ export default {
         (errorHandler || (() => {}))(err);
         return;
       }
-      if (argParser) data.split('\n').forEach(argParser);
+      if (argParser)
+        data.split('\n').forEach((cmd) => {
+          if (!cmd.trim()) return;
+          console.log(`>>> ${cmd}`);
+          argParser(cmd);
+        });
     });
   },
 } as CommandModule;

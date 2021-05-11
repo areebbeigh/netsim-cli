@@ -3,6 +3,8 @@ import Logger, { EventType } from '../logger';
 import BaseNode from './BaseNode';
 
 class Switch extends BaseNode implements ISwitch {
+  breaksCollisionDomain = true;
+  breaksBroadcastDomain = false;
   macTable: { [key: string]: NetworkInterface };
 
   constructor(

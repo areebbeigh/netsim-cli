@@ -4,6 +4,8 @@ import Frame from '../data/Frame';
 import NetworkInterface from './NetworkInterface';
 
 class Host extends BaseNode implements IHost {
+  breaksCollisionDomain = false;
+  breaksBroadcastDomain = false;
   interfaces: NetworkInterface[] = [];
 
   constructor(
@@ -21,6 +23,10 @@ class Host extends BaseNode implements IHost {
 
   private get iface() {
     return this.interfaces[0];
+  }
+
+  getConnectedDevice() {
+    return this.iface.getConnectedNode();
   }
 
   receive() {}

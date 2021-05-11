@@ -103,6 +103,81 @@ class Engine implements IEngine {
 
     host.send(ip, data);
   }
+
+  /**
+   * Start a dfs from this device and count the number of collision domains
+   * @param device
+   */
+  private countCollisionDomainsFromDevice(
+    device: BaseNode,
+    visited: Set<BaseNode>
+  ) {
+    let res = 0;
+    if (
+      visited.has(device) ||
+      device.getConnectedDevices().length === 0
+    ) {
+      // console.log('visisted', device);
+      return res;
+    }
+
+    visited.add(device);
+    if (device.breaksCollisionDomain) {
+      device.getConnectedDevices().forEach((connectedDevice) => {
+        // If the connected device breaks the CD, we count a new CD
+        if (connectedDevice.breaksBroadcastDomain) res += 1;
+        // Add the CDs discoverable from the connected device
+        res += this.countCollisionDomainsFromDevice(
+          connectedDevice,
+          visited
+        );
+      });
+    }
+
+    if (device instanceof Host) {
+      const connected = device.getConnectedDevice();
+      if (connected !== undefined) {
+        if (connected instanceof Host) {
+          // We don't want to count 2 CDs in H1 --- H2
+          visited.add(device);
+        }
+
+        if (connected instanceof Hub) {
+          return 0;
+        }
+
+        return 1;
+      }
+    }
+
+    if (device instanceof Hub) {
+      device.getConnectedDevices().map((d) => visited.add(d));
+      return 1;
+    }
+
+    return res;
+  }
+
+  getCollisionDomains() {
+    let res = 0;
+    const visited = new Set<BaseNode>([]);
+
+    // console.log(this.listDevices());
+    this.listDevices().forEach((device) => {
+      res += this.countCollisionDomainsFromDevice(device, visited);
+      // console.log(res, visited.size);
+    });
+
+    return res;
+  }
+
+  getBroadcastDomains() {}
+
+  stats() {
+    return {
+      collisionDomains: this.getCollisionDomains(),
+    };
+  }
 }
 
 export default Engine;
