@@ -105,55 +105,40 @@ class Engine implements IEngine {
   }
 
   /**
-   * Start a dfs from this device and count the number of collision domains
+   * Start a dfs from this device and count the number of domains bounded
+   * by the breaks function
    * @param device
    */
-  private countCollisionDomainsFromDevice(
+  private countDomains(
     device: BaseNode,
-    visited: Set<BaseNode>
+    visited: Set<BaseNode>,
+    breaksDomain: (d: BaseNode) => boolean
   ) {
     let res = 0;
     if (
       visited.has(device) ||
       device.getConnectedDevices().length === 0
     ) {
-      // console.log('visisted', device);
       return res;
     }
 
     visited.add(device);
-    if (device.breaksCollisionDomain) {
-      device.getConnectedDevices().forEach((connectedDevice) => {
+    device
+      .getConnectedDevices()
+      .filter((d) => !visited.has(d))
+      .forEach((connectedDevice) => {
         // If the connected device breaks the CD, we count a new CD
-        if (connectedDevice.breaksBroadcastDomain) res += 1;
-        // Add the CDs discoverable from the connected device
-        res += this.countCollisionDomainsFromDevice(
+        if (breaksDomain(device)) {
+          res += 1;
+          // Add the CDs discoverable from the connected device
+        }
+
+        res += this.countDomains(
           connectedDevice,
-          visited
+          visited,
+          breaksDomain
         );
       });
-    }
-
-    if (device instanceof Host) {
-      const connected = device.getConnectedDevice();
-      if (connected !== undefined) {
-        if (connected instanceof Host) {
-          // We don't want to count 2 CDs in H1 --- H2
-          visited.add(device);
-        }
-
-        if (connected instanceof Hub) {
-          return 0;
-        }
-
-        return 1;
-      }
-    }
-
-    if (device instanceof Hub) {
-      device.getConnectedDevices().map((d) => visited.add(d));
-      return 1;
-    }
 
     return res;
   }
@@ -162,20 +147,38 @@ class Engine implements IEngine {
     let res = 0;
     const visited = new Set<BaseNode>([]);
 
-    // console.log(this.listDevices());
+    this.listDevices()
+      .filter((d) => d.breaksCollisionDomain)
+      .forEach((device) => {
+        res += this.countDomains(
+          device,
+          visited,
+          (d) => d.breaksCollisionDomain
+        );
+      });
+
+    return res;
+  }
+
+  getBroadcastDomains() {
+    let res = 0;
+    const visited = new Set<BaseNode>([]);
+
     this.listDevices().forEach((device) => {
-      res += this.countCollisionDomainsFromDevice(device, visited);
-      // console.log(res, visited.size);
+      res += this.countDomains(
+        device,
+        visited,
+        (d) => d.breaksBroadcastDomain
+      );
     });
 
     return res;
   }
 
-  getBroadcastDomains() {}
-
   stats() {
     return {
       collisionDomains: this.getCollisionDomains(),
+      broadcastDomains: this.getBroadcastDomains(),
     };
   }
 }

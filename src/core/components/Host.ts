@@ -4,8 +4,8 @@ import Frame from '../data/Frame';
 import NetworkInterface from './NetworkInterface';
 
 class Host extends BaseNode implements IHost {
-  breaksCollisionDomain = false;
-  breaksBroadcastDomain = false;
+  breaksCollisionDomain = true;
+  breaksBroadcastDomain = true;
   interfaces: NetworkInterface[] = [];
 
   constructor(
