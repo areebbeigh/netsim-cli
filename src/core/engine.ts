@@ -164,13 +164,15 @@ class Engine implements IEngine {
     let res = 0;
     const visited = new Set<BaseNode>([]);
 
-    this.listDevices().forEach((device) => {
-      res += this.countDomains(
-        device,
-        visited,
-        (d) => d.breaksBroadcastDomain
-      );
-    });
+    this.listDevices()
+      .filter((d) => d.breaksBroadcastDomain)
+      .forEach((device) => {
+        res += this.countDomains(
+          device,
+          visited,
+          (d) => d.breaksBroadcastDomain
+        );
+      });
 
     return res;
   }
