@@ -25,13 +25,14 @@ class NetworkInterface implements INetworkInterface {
   connection: Connection | undefined;
   mac;
   ip: string | undefined;
-  subnet;
+  subnetMask: string;
 
   constructor(
     host: BaseNode,
     name: string,
     skipReceiveDestinationCheck = false,
-    ip = undefined
+    ip = undefined,
+    subnetMask = '255.0.0.0'
   ) {
     this.skipReceiveDestinationCheck = skipReceiveDestinationCheck;
     this.host = host;
@@ -39,8 +40,7 @@ class NetworkInterface implements INetworkInterface {
     // TODO: Add check for mac collisions.
     this.mac = getRandomMac();
     this.ip = ip;
-    // The only subnet we will work with for now
-    this.subnet = '255.255.255.0';
+    this.subnetMask = subnetMask;
   }
 
   get isConnected() {
@@ -69,8 +69,8 @@ class NetworkInterface implements INetworkInterface {
     );
   }
 
-  assignIp(ip: string) {
-    const netmask = new Netmask(ip, this.subnet);
+  assignIp(ip: string, subnetMask = '255.0.0.0') {
+    const netmask = new Netmask(ip, subnetMask);
     // TODO: Add check to see if this interface is a default gateway.
     // We can skip this since we don't have routers yet.
     if (ip === netmask.first) {
@@ -85,6 +85,7 @@ class NetworkInterface implements INetworkInterface {
       throw new InvalidIp('IP cannot be the network ID.');
     }
     this.ip = ip;
+    this.subnetMask = subnetMask;
     this.host.logger.logEvent(EventType.IP_ASSIGN, this.host, this);
   }
 
@@ -210,7 +211,7 @@ class NetworkInterface implements INetworkInterface {
 
   sendPacket(packet: Packet): void {
     if (this.ip) {
-      const ipBlock = new Netmask(this.ip, this.subnet);
+      const ipBlock = new Netmask(this.ip, this.subnetMask);
       // Do ARP lookup for packet.destination
       let arpLookupIp = packet.destination;
       // Check if destination IP is local or remote

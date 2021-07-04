@@ -7,6 +7,6 @@ connect 1 eth1 3 eth0
 connect 1 eth2 4 eth0
 
 # this is a comment
-assign-ip 2 eth0 10.0.0.2
-assign-ip 3 eth0 10.0.0.3
+assign-ip 2 eth0 10.0.0.2 128.0.0.0
+assign-ip 3 eth0 10.0.0.3 255.255.0.0
 send 2 10.0.0.3 hi

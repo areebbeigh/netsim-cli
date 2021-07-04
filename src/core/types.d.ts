@@ -11,7 +11,12 @@ interface IEngine {
   removeDeviceById(id: number): void;
   listDevices(): BaseNode[];
 
-  assignIp(deviceId: number, ifaceName: string, ip: string);
+  assignIp(
+    deviceId: number,
+    ifaceName: string,
+    ip: string,
+    subnetMask?: string
+  );
   connectById(
     deviceId1: number,
     deviceIface1: string,

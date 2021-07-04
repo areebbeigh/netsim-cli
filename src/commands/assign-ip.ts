@@ -1,7 +1,7 @@
 import { CommandModule } from 'yargs';
 
 export default {
-  command: 'assign-ip <deviceId> <interface> <ip>',
+  command: 'assign-ip <deviceId> <interface> <ip> [subnetMask]',
   describe: 'Assign IP to a device interface',
   builder: (yargs) => {
     return yargs
@@ -17,17 +17,22 @@ export default {
         type: 'string',
         describe: 'e.g: 10.0.0.2',
       })
-      .usage(`assign-ip <deviceId> <interface> <ip>`);
+      .option('subnetMask', {
+        type: 'string',
+        describe: 'the subnet mask for the ip e.g: 255.0.0.0',
+      })
+      .usage(`assign-ip <deviceId> <interface> <ip> [subnetMask]`);
   },
   handler: (argv: Arguments) => {
-    const { engine, deviceId, ip } = argv;
+    const { engine, deviceId, ip, subnetMask } = argv;
 
     if (deviceId && argv.interface && ip) {
       try {
         engine?.assignIp(
           deviceId as number,
           argv.interface as string,
-          ip as string
+          ip as string,
+          subnetMask as undefined | string
         );
       } catch (e) {
         (argv.errorHandler || (() => {}))(e);

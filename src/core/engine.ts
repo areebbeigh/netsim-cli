@@ -77,11 +77,16 @@ class Engine implements IEngine {
     return Object.values(this.nodes);
   }
 
-  assignIp(deviceId: number, ifaceName: string, ip: string) {
+  assignIp(
+    deviceId: number,
+    ifaceName: string,
+    ip: string,
+    subnetMask?: string
+  ) {
     const iface = this.getDeviceById(deviceId).getInterfaceByName(
       ifaceName
     );
-    iface.assignIp(ip);
+    iface.assignIp(ip, subnetMask);
   }
 
   connectById(

@@ -17,7 +17,7 @@ export default {
           interfaces: node.interfaces.map((iface) => ({
             name: iface.name,
             ip: iface.ip,
-            subnet: iface.subnet,
+            subnetMask: iface.subnetMask,
             mac: iface.mac,
           })),
         });

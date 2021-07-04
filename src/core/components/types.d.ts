@@ -12,7 +12,7 @@ interface INetworkInterface {
   host: BaseNode;
   mac: string;
   ip: string | undefined;
-  subnet: string;
+  subnetMask: string;
   connection: Connection;
   skipReceiveDestinationCheck: boolean;
   connect(interface: NetworkInterface): Connection;
