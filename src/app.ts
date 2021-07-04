@@ -11,6 +11,7 @@ import send from './commands/send';
 import import_ from './commands/import';
 import flowControl from './commands/flow-control';
 import stats from './commands/stats';
+import arpLookup from './commands/arp-lookup';
 
 const engine = new Engine();
 engine.logger.listen((log) => console.log(log.toString(), '\n---'));
@@ -24,6 +25,7 @@ const commands = [
   import_,
   flowControl,
   stats,
+  arpLookup,
 ];
 const parser = yargs
   .exitProcess(false)

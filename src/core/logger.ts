@@ -20,6 +20,9 @@ enum EventType {
   INTERFACE_DISCONNECT = 'INTERFACE DISCONNECT',
 
   LINK_FAILURE = 'LINK FAILURE',
+
+  // For misc log messages
+  MISC = 'MISC',
 }
 
 const getHostObject = (host: BaseNode, iface?: NetworkInterface) => ({
@@ -28,28 +31,32 @@ const getHostObject = (host: BaseNode, iface?: NetworkInterface) => ({
 });
 
 const getLogMessage = (log: ILog) => {
-  const hostName = log.host.host.name;
-  const interfaceFullName = log.host.interface?.fullName;
-  const otherHostName = log.otherHost?.interface;
-  const otherInterfaceFullName = log.otherHost?.interface?.fullName;
+  if (log.host) {
+    const hostName = log.host.host.name;
+    const interfaceFullName = log.host.interface?.fullName;
+    const otherHostName = log.otherHost?.interface;
+    const otherInterfaceFullName = log.otherHost?.interface?.fullName;
 
-  const host1Tag = `${interfaceFullName || hostName}`;
-  const host2Tag = otherHostName
-    ? `${otherInterfaceFullName || otherHostName}`
-    : '';
-  const eventTag = `${log.type}`;
-  let data = log.dataExchanged?.toString();
+    const host1Tag = `${interfaceFullName || hostName}`;
+    const host2Tag = otherHostName
+      ? `${otherInterfaceFullName || otherHostName}`
+      : '';
+    const eventTag = `${log.type}`;
+    let data = log.dataExchanged?.toString();
 
-  if (log.type === EventType.ARP_SEND) {
-    data = `Who has IP ${log.dataExchanged?.packet?.destination}?`;
+    if (log.type === EventType.ARP_SEND) {
+      data = `Who has IP ${log.dataExchanged?.packet?.destination}?`;
+    }
+
+    if (log.type === EventType.NODE_CREATED) {
+      data = `${host1Tag}.id: ${log.host.host.id}`;
+    }
+
+    return chalk`{bold.greenBright ${host1Tag}} - {cyan ${eventTag}} {bold.green ${host2Tag}}
+    {italic ${data || ''}}`.trim();
   }
 
-  if (log.type === EventType.NODE_CREATED) {
-    data = `${host1Tag}.id: ${log.host.host.id}`;
-  }
-
-  return chalk`{bold.greenBright ${host1Tag}} - {cyan ${eventTag}} {bold.green ${host2Tag}}
-  {italic ${data || ''}}`.trim();
+  return chalk`${log.message}`;
 };
 
 class Logger implements ILogger {
@@ -57,19 +64,26 @@ class Logger implements ILogger {
 
   logEvent(
     event: EventType,
-    host: BaseNode,
+    host?: BaseNode,
     iface?: NetworkInterface,
     otherHost?: BaseNode,
     otherIface?: NetworkInterface,
-    dataExchanged?: any
+    dataExchanged?: any,
+    message?: string
   ) {
+    if (message && event !== EventType.MISC)
+      throw new Error(
+        `message can only be used with MISC event type`
+      );
+
     const log: ILog = {
       type: event,
-      host: getHostObject(host, iface),
+      host: host ? getHostObject(host, iface) : undefined,
       otherHost: otherHost
         ? getHostObject(otherHost, otherIface)
         : undefined,
       dataExchanged,
+      message,
     };
     log.toString = () => getLogMessage(log);
     this.emit(log);

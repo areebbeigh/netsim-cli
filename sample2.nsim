@@ -1,7 +1,9 @@
 #flow-control go-back-n
 add host
 add host
-connect 1 eth0 2 eth0 0.2
+connect 1 eth0 2 eth0
 assign-ip 1 eth0 10.0.0.2
 assign-ip 2 eth0 10.0.0.3
-send 2 10.0.0.2 hi
+#send 2 10.0.0.2 hi
+
+arp-lookup 2 10.0.0.2

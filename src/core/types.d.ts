@@ -25,12 +25,13 @@ type EventType_ = import('./logger').EventType;
 
 interface ILog {
   type: EventType_;
-  host: {
+  host?: {
     host: BaseNode;
     interface?: NetworkInterface;
   };
   otherHost?: ILog['host'];
   dataExchanged?: any;
+  message?: string;
   toString(): string;
 }
 

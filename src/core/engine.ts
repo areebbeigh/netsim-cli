@@ -1,9 +1,11 @@
+import chalk from 'chalk';
+
 import Bridge from './components/Bridge';
 import Host from './components/Host';
 import Hub from './components/Hub';
 import Switch from './components/Switch';
 import { EngineError } from './errors';
-import Logger from './logger';
+import Logger, { EventType } from './logger';
 
 enum DeviceType {
   HOST = 'Host',
@@ -106,6 +108,26 @@ class Engine implements IEngine {
       throw new EngineError(`You can only call hosts to send data.`);
 
     host.send(ip, data);
+  }
+
+  arpLookup(hostId: number, ip: string) {
+    const host = this.getDeviceById(hostId);
+    if (!(host instanceof Host))
+      throw new EngineError(
+        `You can only call hosts to do ARP lookups.`
+      );
+
+    host.interfaces[0].doArpLookup(ip).then((lookupMac) => {
+      this.logger.logEvent(
+        EventType.MISC,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        chalk`{italic ARP Lookup for ${ip} gave: ${lookupMac}}`
+      );
+    });
   }
 
   /**

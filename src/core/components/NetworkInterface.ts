@@ -145,7 +145,7 @@ class NetworkInterface implements INetworkInterface {
    * ARP table agian.
    * @param ip
    */
-  doArpLookup(ip: string) {
+  private sendArp(ip: string) {
     if (this.ip) {
       // Frames with destination as null are treated as broadcast frames
       const frame = new Frame(
@@ -165,6 +165,37 @@ class NetworkInterface implements INetworkInterface {
     } else {
       this.throwNoIp();
     }
+  }
+
+  doArpLookup(ip: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let arpRetries = 0;
+
+      const sendIntervalId = setInterval(() => {
+        const destinationMac = this.host.lookupArpTable(ip);
+        if (!destinationMac) {
+          this.sendArp(ip);
+        }
+
+        if (!destinationMac) {
+          arpRetries++;
+          if (arpRetries >= 5) {
+            // Failed to arp lookup the receiver
+            this.host.logger.logEvent(
+              EventType.LINK_FAILURE,
+              this.host,
+              this,
+              undefined,
+              undefined,
+              `ARP Retries: ${arpRetries}`
+            );
+            clearInterval(sendIntervalId);
+          }
+          return;
+        }
+        resolve(destinationMac as string);
+      }, 500);
+    });
   }
 
   sendData(ip: string, data: string): void {
@@ -188,41 +219,19 @@ class NetworkInterface implements INetworkInterface {
         arpLookupIp = ipBlock.base;
       }
 
-      let arpRetries = 0;
-      const sendIntervalId = setInterval(() => {
-        if (this.currentlySending === undefined)
-          this.currentlySending = packet.uuid;
+      this.doArpLookup(arpLookupIp).then((destinationMac) => {
+        const intervalId = setInterval(() => {
+          if (this.currentlySending === undefined)
+            this.currentlySending = packet.uuid;
+          // There is a previous packet waiting to be sent. We have to wait.
+          if (this.currentlySending !== packet.uuid) return;
 
-        // There is a previous packet waiting to be sent. We have to wait.
-        if (this.currentlySending !== packet.uuid) return;
-
-        const destinationMac = this.host.lookupArpTable(arpLookupIp);
-        if (!destinationMac) {
-          this.doArpLookup(arpLookupIp);
-        }
-
-        if (!destinationMac) {
-          arpRetries++;
-          if (arpRetries >= 5) {
-            // Failed to arp lookup the receiver
-            this.host.logger.logEvent(
-              EventType.LINK_FAILURE,
-              this.host,
-              this,
-              undefined,
-              undefined,
-              `ARP Retries: ${arpRetries}`
-            );
-            clearInterval(sendIntervalId);
-            return;
-          }
-          return;
-        }
-        const frame = new Frame(this.mac, destinationMac, packet);
-        this.sendFrame(frame);
-        this.currentlySending = undefined;
-        clearInterval(sendIntervalId);
-      }, 500);
+          const frame = new Frame(this.mac, destinationMac, packet);
+          this.sendFrame(frame);
+          this.currentlySending = undefined;
+          clearInterval(intervalId);
+        }, 500);
+      });
     } else this.throwNoIp();
   }
 
