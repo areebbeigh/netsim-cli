@@ -13,15 +13,25 @@ class RoutingTable implements IRoutingTable {
   merge(otherTable: RoutingTable, iface: NetworkInterface) {
     let updated = false;
     Object.entries(otherTable.costTable).forEach(([ip, val]) => {
-      const myEntry = this.costTable[ip];
-
+      // Ignore own interface IPs
       if (
-        !myEntry ||
-        myEntry[0] > val[0] + 1 ||
-        myEntry[1] === iface
-      ) {
-        this.costTable[ip] = [val[0] + 1, val[1]];
+        this.router.interfaces
+          .filter((iface_) => iface_.isConnected)
+          .find((iface_) => iface_.netmask.contains(ip))
+      )
+        return;
+
+      const myEntry = this.costTable[ip];
+      const newVal: [number, NetworkInterface] = [val[0] + 1, val[1]];
+
+      if (!myEntry || myEntry[0] > val[0] + 1) {
+        this.costTable[ip] = newVal;
         updated = true;
+      } else if (myEntry[1] === iface) {
+        if (this.costTable[ip] !== newVal) {
+          this.costTable[ip] = newVal;
+          updated = true;
+        }
       }
     });
 

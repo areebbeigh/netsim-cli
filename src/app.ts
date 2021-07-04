@@ -70,7 +70,7 @@ Type 'help' to get started.
 
 Github: {blue https://github.com/areebbeigh/netsim-cli/}`);
 
-  argParser('import ./sample_routers.nsim');
+  argParser('import ./sample_routers2.nsim');
   const prompt = () => {
     inquirer
       .prompt([

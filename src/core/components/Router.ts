@@ -21,6 +21,24 @@ class Router extends BaseNode implements IRouter {
   }
 
   sendRoutingTable() {
+    // Use a printable cost table
+    const costTable: any = {};
+    Object.entries(this.routingTable.costTable).forEach(
+      ([ip, val]) => {
+        costTable[ip] = { cost: val[0], interface: val[1].name };
+      }
+    );
+
+    if (Object.keys(costTable).length)
+      this.logger.logEvent(
+        EventType.RIP_UPDATE,
+        this,
+        undefined,
+        undefined,
+        undefined,
+        costTable
+      );
+
     this.interfaces.forEach((iface) => {
       const node = iface.getConnectedNode();
       if (node instanceof Router) {
@@ -37,22 +55,6 @@ class Router extends BaseNode implements IRouter {
     iface: NetworkInterface
   ) {
     this.routingTable.merge(table, iface);
-
-    // Use a printable cost table
-    const costTable: any = {};
-    Object.entries(this.routingTable.costTable).forEach(
-      ([ip, val]) => {
-        costTable[ip] = { cost: val[0], interface: val[1].name };
-      }
-    );
-    this.logger.logEvent(
-      EventType.RIP_UPDATE,
-      this,
-      iface,
-      undefined,
-      undefined,
-      costTable
-    );
   }
 
   receive(frame: Frame, iface: NetworkInterface) {
@@ -84,8 +86,16 @@ class Router extends BaseNode implements IRouter {
     return table;
   }
 
-  onConnect() {
+  updateCostTable() {
     this.routingTable.updateCosts(this.buildCostTable());
+  }
+
+  onConnect() {
+    this.updateCostTable();
+  }
+
+  onAssignIp() {
+    this.updateCostTable();
   }
 }
 

@@ -159,6 +159,7 @@ abstract class BaseNode implements IBaseNode {
   }
 
   onConnect(iface: NetworkInterface) {}
+  onAssignIp(iface: NetworkInterface) {}
 }
 
 export default BaseNode;

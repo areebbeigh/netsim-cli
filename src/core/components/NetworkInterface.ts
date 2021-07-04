@@ -89,6 +89,7 @@ class NetworkInterface implements INetworkInterface {
     this.ip = ip;
     this.subnetMask = subnetMask;
     this.host.logger.logEvent(EventType.IP_ASSIGN, this.host, this);
+    this.host.onAssignIp(this);
   }
 
   connect(

@@ -1,0 +1,41 @@
+add router 5
+add router 5
+add router 5
+
+add switch 5
+add switch 5
+
+add host
+add host
+add host
+add host
+
+assign-ip 1 eth0 20.0.0.2
+assign-ip 1 eth1 30.0.0.1
+
+assign-ip 2 eth0 20.0.0.1
+assign-ip 2 eth1 10.0.0.1
+assign-ip 2 eth3 50.0.0.1
+
+assign-ip 3 eth0 30.0.0.2
+assign-ip 3 eth1 40.0.0.1
+assign-ip 3 eth2 50.0.0.2
+
+connect 1 eth0 2 eth0
+connect 1 eth1 3 eth0
+
+connect 2 eth1 4 eth0
+connect 2 eth3 3 eth2
+
+connect 3 eth1 5 eth0
+
+connect 4 eth1 6 eth0
+connect 4 eth2 7 eth0
+
+connect 5 eth1 8 eth0
+connect 5 eth2 9 eth0
+
+assign-ip 6 eth0 10.0.0.2
+assign-ip 7 eth0 10.0.0.3
+assign-ip 8 eth0 40.0.0.2
+assign-ip 9 eth0 40.0.0.3
