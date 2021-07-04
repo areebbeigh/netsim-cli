@@ -1,6 +1,6 @@
 import RoutingTable from '../component-utils/RoutingTable';
 import Frame from '../data/Frame';
-import Logger from '../logger';
+import Logger, { EventType } from '../logger';
 import BaseNode from './BaseNode';
 
 class Router extends BaseNode implements IRouter {
@@ -36,11 +36,28 @@ class Router extends BaseNode implements IRouter {
     table: RoutingTable,
     iface: NetworkInterface
   ) {
-    // TODO: Log receive
     this.routingTable.merge(table, iface);
+
+    // Use a printable cost table
+    const costTable: any = {};
+    Object.entries(this.routingTable.costTable).forEach(
+      ([ip, val]) => {
+        costTable[ip] = { cost: val[0], interface: val[1].name };
+      }
+    );
+    this.logger.logEvent(
+      EventType.RIP_UPDATE,
+      this,
+      iface,
+      undefined,
+      undefined,
+      costTable
+    );
   }
 
   receive(frame: Frame, iface: NetworkInterface) {
+    if (frame.packet.destination === iface.ip) return;
+
     const nextIface = this.routingTable.getNextHop(
       frame.packet.destination
     );
@@ -49,8 +66,26 @@ class Router extends BaseNode implements IRouter {
       // TODO: Log receive
       nextIface.sendPacket(frame.packet);
     } else {
+      console.log('router dropped pkt');
       // TODO: Log packet drop
     }
+  }
+
+  buildCostTable(): IRouteCostTable {
+    const table: IRouteCostTable = {};
+    this.interfaces
+      .filter((iface) => iface.isConnected)
+      .forEach((iface) => {
+        table[`${iface.netmask.base}/${iface.netmask.mask}`] = [
+          1,
+          iface,
+        ];
+      });
+    return table;
+  }
+
+  onConnect() {
+    this.routingTable.updateCosts(this.buildCostTable());
   }
 }
 

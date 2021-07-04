@@ -157,6 +157,8 @@ abstract class BaseNode implements IBaseNode {
       frame
     );
   }
+
+  onConnect(iface: NetworkInterface) {}
 }
 
 export default BaseNode;

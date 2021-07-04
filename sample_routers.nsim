@@ -11,4 +11,17 @@ assign-ip 2 eth0 20.0.0.2
 connect 3 eth0 1 eth0
 connect 3 eth1 2 eth0
 
-send 1 20.0.0.2 h
+add host
+add host
+add router 5
+
+assign-ip 6 eth0 30.0.0.1
+assign-ip 3 eth3 30.0.0.2
+
+assign-ip 6 eth1 40.0.0.1
+assign-ip 4 eth0 40.0.0.2
+
+connect 6 eth0 3 eth3
+connect 6 eth1 4 eth0
+
+send 1 40.0.0.2 h

@@ -1,11 +1,13 @@
 import chalk from 'chalk';
+import getTable from './lib/getTable';
 
 enum EventType {
   ARP_SEND = 'ARP SEND',
   ARP_RECEIVE = 'ARP RECEIVE',
   ARP_LEARN = 'ARP LEARN',
-
   MAC_LEARN = 'MAC LEARN',
+
+  RIP_UPDATE = 'RIP UPDATE',
 
   ACK_SEND = 'ACK SEND',
   ACK_RECEIVE = 'ACK RECEIVE',
@@ -52,8 +54,18 @@ const getLogMessage = (log: ILog) => {
       data = `${host1Tag}.id: ${log.host.host.id}`;
     }
 
-    return chalk`{bold.greenBright ${host1Tag}} - {cyan ${eventTag}} {bold.green ${host2Tag}}
-    {italic ${data || ''}}`.trim();
+    if (log.type === EventType.RIP_UPDATE) {
+      data = getTable(log.dataExchanged);
+    }
+
+    let msg = chalk`
+{italic ${data || ''}}`.trimRight();
+
+    if (log.type !== EventType.RIP_UPDATE) {
+      msg = `${msg}`;
+    }
+
+    return chalk`{bold.greenBright ${host1Tag}} - {cyan ${eventTag}} {bold.green ${host2Tag}}${msg}`.trim();
   }
 
   return chalk`${log.message}`;

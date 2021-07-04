@@ -63,6 +63,10 @@ class NetworkInterface implements INetworkInterface {
     ] as IFlowController;
   }
 
+  get netmask() {
+    return new Netmask(`${this.ip}/${this.subnetMask}`);
+  }
+
   private throwNoIp() {
     throw new NoAssignedIp(
       `${this.host.name}.${this.name} interface has no IP assigned. Can't send packets.`
@@ -115,6 +119,8 @@ class NetworkInterface implements INetworkInterface {
       otherInterface.host,
       otherInterface
     );
+
+    this.host.onConnect(this);
     return conn;
   }
 
@@ -209,13 +215,12 @@ class NetworkInterface implements INetworkInterface {
 
   sendPacket(packet: Packet): void {
     if (this.ip) {
-      const ipBlock = new Netmask(this.ip, this.subnetMask);
       // Do ARP lookup for packet.destination
       let arpLookupIp = packet.destination;
       // Check if destination IP is local or remote
-      if (!ipBlock.contains(packet.destination)) {
+      if (!this.netmask.contains(packet.destination)) {
         // Do ARP lookup for default gateway if destination is remote
-        arpLookupIp = ipBlock.first;
+        arpLookupIp = this.netmask.first;
       }
 
       this.doArpLookup(arpLookupIp).then((destinationMac) => {
