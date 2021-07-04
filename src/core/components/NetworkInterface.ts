@@ -71,9 +71,7 @@ class NetworkInterface implements INetworkInterface {
 
   assignIp(ip: string, subnetMask = '255.0.0.0') {
     const netmask = new Netmask(ip, subnetMask);
-    // TODO: Add check to see if this interface is a default gateway.
-    // We can skip this since we don't have routers yet.
-    if (ip === netmask.first) {
+    if (ip === netmask.first && !this.host.isRouter) {
       throw new InvalidIp(
         'IP Address for a host interface cannot be the network default gateway.'
       );
@@ -217,7 +215,7 @@ class NetworkInterface implements INetworkInterface {
       // Check if destination IP is local or remote
       if (!ipBlock.contains(packet.destination)) {
         // Do ARP lookup for default gateway if destination is remote
-        arpLookupIp = ipBlock.base;
+        arpLookupIp = ipBlock.first;
       }
 
       this.doArpLookup(arpLookupIp).then((destinationMac) => {

@@ -1,6 +1,5 @@
 import Logger from '../logger';
 import BaseNode from './BaseNode';
-import Frame from '../data/Frame';
 import NetworkInterface from './NetworkInterface';
 
 class Host extends BaseNode implements IHost {

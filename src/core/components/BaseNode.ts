@@ -11,6 +11,7 @@ abstract class BaseNode implements IBaseNode {
   interfaces: IBaseNode['interfaces'];
   arpTable: IBaseNode['arpTable'];
   logger: Logger;
+  isRouter = false;
 
   constructor(
     name: string,

@@ -90,11 +90,12 @@ class StopAndWaitARQ
       if (frame.packet.seqNo === undefined)
         throw new Error(`Packet does not have a seqNo: ${frame}`);
 
-      this.iface.sendAck(
-        frame.packet.source,
-        frame,
-        ((frame.packet.seqNo + 1) % this.sendWindowSize).toString()
-      );
+      if (!this.iface.host.isRouter)
+        this.iface.sendAck(
+          frame.packet.source,
+          frame,
+          ((frame.packet.seqNo + 1) % this.sendWindowSize).toString()
+        );
     }
   }
 }

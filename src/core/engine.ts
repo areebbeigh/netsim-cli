@@ -3,6 +3,7 @@ import chalk from 'chalk';
 import Bridge from './components/Bridge';
 import Host from './components/Host';
 import Hub from './components/Hub';
+import Router from './components/Router';
 import Switch from './components/Switch';
 import { EngineError } from './errors';
 import Logger, { EventType } from './logger';
@@ -12,6 +13,7 @@ enum DeviceType {
   HUB = 'Hub',
   SWITCH = 'Switch',
   BRIDGE = 'Bridge',
+  ROUTER = 'Router',
 }
 
 class Engine implements IEngine {
@@ -35,6 +37,8 @@ class Engine implements IEngine {
         return Switch;
       case DeviceType.BRIDGE:
         return Bridge;
+      case DeviceType.ROUTER:
+        return Router;
       default:
         throw new EngineError(
           `${type} does not have a matching class`
